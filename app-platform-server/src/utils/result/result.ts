@@ -1,4 +1,3 @@
-import { RESULT_CODE } from "./resultCode"
 
 export class Result<T> {
     public static SUCCESS_CODE = 0
@@ -7,9 +6,9 @@ export class Result<T> {
     private msg: string
     private value: T
 
-    constructor(code: number, value?: T) {
+    constructor(code: number, msg?: string, value?: T) {
         this.code = code
-        this.msg = RESULT_CODE[`${code}`] ?? ""
+        this.msg = msg ?? ""
         this.value = value ?? null
     }
 

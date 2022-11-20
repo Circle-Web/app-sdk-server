@@ -1,13 +1,10 @@
 import {
-    Entity,
-    Column,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn,
-    CreateDateColumn,
+    Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,
+    UpdateDateColumn
 } from 'typeorm';
 
 @Entity('user')
-export class UserEntity {
+export class UserDO {
     @PrimaryGeneratedColumn({
         name: 'Id',
         comment: '用户id',

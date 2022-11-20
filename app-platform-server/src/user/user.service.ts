@@ -3,16 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserDO } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @InjectRepository(UserDO)
+    private readonly userRepository: Repository<UserDO>,
   ) { }
 
-  create(createUserDto: CreateUserDto) {
+  register(createUserDto: CreateUserDto) {
     this.userRepository.create(createUserDto);
     return this.userRepository.save(createUserDto);
   }
@@ -21,9 +21,9 @@ export class UserService {
     return this.userRepository.find();
   }
 
-  findOne(id: number) {
+  findOne(account: string) {
     return this.userRepository.findOne({
-      where: { id },
+      where: { account },
     });
   }
 
@@ -35,10 +35,4 @@ export class UserService {
     return this.userRepository.delete(id);
   }
 
-  async exist(account: string, password: string): Promise<boolean> {
-    let v = await this.userRepository.findOne({
-      where: { account, password }
-    })
-    return v != null
-  }
 }
