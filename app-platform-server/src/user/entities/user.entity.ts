@@ -35,6 +35,15 @@ export class UserDO {
     })
     password: string;
 
+
+    @Column({
+        name: 'RoleId',
+        width: 20,
+        comment: '权限id，1 用户，2 管理员',
+        default: 1,
+    })
+    roleId: number;
+
     @CreateDateColumn({
         name: 'CreatedTime',
         type: 'datetime',

@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdminController } from './admin/admin.controller';
+import { AdminModule } from './admin/admin.module';
+import { AppStoreModule } from './app-store/app-store.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseConfig } from './config';
+import { TagService } from './tag/tag.service';
 import { UserDO } from './user/entities/user.entity';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
@@ -19,7 +23,10 @@ import { UserModule } from './user/user.module';
     }),
     AuthModule,
     UserModule,
+    AppStoreModule,
+    AdminModule,
   ],
-  controllers: [UserController],
+  controllers: [AdminController, UserController],
+  providers: [TagService],
 })
 export class AppModule { }

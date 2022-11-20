@@ -1,5 +1,5 @@
 import { Result } from "./result";
-import { ResultCode } from "./resultCode";
+import { codeMap, ResultCode } from "./resultCode";
 
 export class ResultFactory {
 
@@ -15,8 +15,8 @@ export class ResultFactory {
     /**
      * 创建一个Result。
      */
-    public static create<T>(codeGroup: (string | number)[], value?: T) {
-        return new Result<T>(+codeGroup[0], codeGroup[1] + "", value);
+    public static create<T>(code: ResultCode, value?: T) {
+        return new Result<T>(code, codeMap[code], value);
     }
 
 }

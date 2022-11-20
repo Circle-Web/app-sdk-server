@@ -1,5 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginDto } from './dto/login.dto';
@@ -12,10 +11,9 @@ export class UserController {
     private readonly authService: AuthService
   ) { }
 
-  @UseGuards(AuthGuard('jwt')) // 使用 'JWT' 进行验证
   @Post('/register')
   register(@Body() createUserDto: CreateUserDto) {
-    return this.userService.register(createUserDto);
+    return this.userService.register(createUserDto.username, createUserDto.account, createUserDto.password);
   }
 
   @Post('/login')

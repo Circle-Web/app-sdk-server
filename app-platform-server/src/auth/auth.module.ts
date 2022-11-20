@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { AdminModule } from 'src/admin/admin.module';
 import { JwtConstants } from 'src/config';
 import { UserModule } from 'src/user/user.module';
 import { AuthService } from './auth.service';
@@ -13,6 +14,7 @@ import { JwtStrategy } from './jwt.strategy';
       secret: JwtConstants.secret,
       signOptions: { expiresIn: '8h' }, // token 过期时效
     }),
+    AdminModule,
     UserModule,
   ],
   providers: [AuthService, JwtStrategy],

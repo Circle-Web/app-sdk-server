@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { AdminService } from 'src/admin/admin.service';
 import { UserDO } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { Result } from 'src/utils/result/result';
@@ -10,6 +11,7 @@ import { ResultFactory } from 'src/utils/result/resultFactory';
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
+    private readonly adminService: AdminService,
     private readonly jwtService: JwtService,
   ) { }
 
@@ -28,8 +30,9 @@ export class AuthService {
   async certificate(user: UserDO) {
     const payload = {
       id: user.id,
-      account: user.account,
       username: user.username,
+      account: user.account,
+      roleId: user.roleId
     };
     try {
       const token = this.jwtService.sign(payload);
@@ -38,4 +41,5 @@ export class AuthService {
       return ResultFactory.create(ResultCode.SUCCESS);
     }
   }
+
 }
