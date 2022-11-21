@@ -29,36 +29,13 @@ import {
   storageSession
 } from "@pureadmin/utils";
 
-// import pptRouter from "./modules/ppt";
 import homeRouter from "./modules/home";
-// import ableRouter from "./modules/able";
-// import listRouter from "./modules/list";
-// import aboutRouter from "./modules/about";
 import errorRouter from "./modules/error";
-// import guideRouter from "./modules/guide";
-// import resultRouter from "./modules/result";
-// import editorRouter from "./modules/editor";
-// import nestedRouter from "./modules/nested";
-// import flowChartRouter from "./modules/flowchart";
 import remainingRouter from "./modules/remaining";
-// import componentsRouter from "./modules/components";
-// import formDesignRouter from "./modules/formdesign";
+import extAppRouter from "./modules/myExtApp";
 
 /** 原始静态路由（未做任何处理） */
-const routes = [
-  // pptRouter,
-  homeRouter,
-  // ableRouter,
-  // listRouter,
-  // aboutRouter,
-  errorRouter
-  // guideRouter,
-  // resultRouter,
-  // nestedRouter,
-  // editorRouter
-  // flowChartRouter,
-  // componentsRouter
-];
+const routes = [homeRouter, errorRouter, extAppRouter];
 
 /** 导出处理后的静态路由（三级及以上的路由全部拍成二级） */
 export const constantRoutes: Array<RouteRecordRaw> = formatTwoStageRoutes(

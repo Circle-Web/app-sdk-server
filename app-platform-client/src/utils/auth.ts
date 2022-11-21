@@ -13,6 +13,8 @@ export interface DataInfo<T> {
   username?: string;
   /** 当前登陆用户的角色 */
   roles?: Array<string>;
+  /** 当前登录用户的头像 */
+  avatarUrl?: string;
 }
 
 export const sessionKey = "user-info";
@@ -44,24 +46,29 @@ export function setToken(data: DataInfo<Date>) {
       })
     : Cookies.set(TokenKey, cookieString);
 
-  function setSessionKey(username: string, roles: Array<string>) {
-    useUserStoreHook().SET_USERNAME(username);
+  function setSessionKey(
+    username: string,
+    roles: Array<string>,
+    avatarUrl?: string
+  ) {
+    useUserStoreHook().SET_USERNAME(username, avatarUrl);
     useUserStoreHook().SET_ROLES(roles);
     storageSession.setItem(sessionKey, {
       refreshToken,
       expires,
       username,
-      roles
+      roles,
+      avatarUrl
     });
   }
 
   if (data.username && data.roles) {
-    const { username, roles } = data;
-    setSessionKey(username, roles);
+    const { username, roles, avatarUrl } = data;
+    setSessionKey(username, roles, avatarUrl);
   } else {
-    const { username, roles } =
+    const { username, roles, avatarUrl } =
       storageSession.getItem<DataInfo<number>>(sessionKey);
-    setSessionKey(username, roles);
+    setSessionKey(username, roles, avatarUrl);
   }
 }
 

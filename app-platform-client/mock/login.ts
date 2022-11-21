@@ -11,6 +11,8 @@ export default [
           success: true,
           data: {
             username: "admin",
+            avatarUrl:
+              "https://avatars.githubusercontent.com/u/30518686?s=40&v=4",
             // 一个用户可能有多个角色
             roles: ["admin"],
             accessToken: "eyJhbGciOiJIUzUxMiJ9.admin",

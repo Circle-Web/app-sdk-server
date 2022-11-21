@@ -79,7 +79,7 @@
   "devDependencies": {
     "@faker-js/faker": "^7.5.0",
     "@iconify-icons/carbon": "^1.2.8",
-    "@iconify-icons/ep": "^1.2.7",
+    "@iconify-icons/ep": "^1.2.9",
     "@iconify-icons/fa": "^1.2.3",
     "@iconify-icons/fa-solid": "^1.2.3",
     "@iconify-icons/fluent": "^1.2.16",

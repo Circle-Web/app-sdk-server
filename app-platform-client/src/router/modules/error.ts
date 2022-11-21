@@ -3,7 +3,7 @@ import type { RouteConfigsTable } from "/#/index";
 
 const errorRouter: RouteConfigsTable = {
   path: "/error",
-  redirect: "/error/403",
+  redirect: "/error/404",
   meta: {
     icon: "information-line",
     title: $t("menus.hsabnormal"),
