@@ -34,6 +34,7 @@ menus:
   extApp: 小程序
   hsMyExtApp: 我的小程序
   hsExtAppList: 小程序列表
+  hsExtAppDetail: 小程序详情
 status:
   hsLoad: 加载中...
 login:

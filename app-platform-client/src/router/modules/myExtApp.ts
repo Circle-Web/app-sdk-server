@@ -31,11 +31,11 @@ const homeRouter: RouteConfigsTable = {
       }
     },
     {
-      path: "/ext/detail/:id",
+      path: "/ext/detail",
       name: "AppDetail",
       component: () => import("@/views/appDetail/index.vue"),
       meta: {
-        title: "小程序详情",
+        title: $t("menus.hsExtAppDetail"),
         showLink: false
       }
     }
