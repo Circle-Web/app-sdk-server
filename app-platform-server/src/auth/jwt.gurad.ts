@@ -7,7 +7,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         private readonly options = {
             match: /^\/api/,
             getMatch: /^\/api(.*)(\/isauth)(\/){0,1}(.*)/,
-            ignoreApi: ['/appstore/tagList', '/appstore/extList', '/appstore/search', '/appstore/extMainDetail'],
+            ignoreApi: ['/user/login', '/user/register', '/appstore/tagList', '/appstore/extList', '/appstore/search', '/appstore/extMainDetail'],
         },
     ) {
         super();
@@ -38,7 +38,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     handleRequest(err, user) {
-        console.log(err, user, 'addaaaa');
+        console.log('handleRequest', err, user);
         if (err || !user) {
             // jwt 只解决登录态问题 409
             throw new HttpException('登录态已失效', HttpStatus.CONFLICT);

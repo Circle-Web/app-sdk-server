@@ -38,7 +38,7 @@ export class UserDO {
 
     @Column({
         name: 'RoleId',
-        width: 20,
+        width: 10,
         comment: '权限id，1 用户，2 管理员',
         default: 1,
     })

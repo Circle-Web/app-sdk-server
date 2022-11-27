@@ -1,18 +1,17 @@
 import { Column } from "typeorm";
 
-export class TagDO {
+export class ExtTagDO {
     @Column({
-        name: 'Id',
+        name: 'TagId',
         width: 20,
         comment: '标签的唯一id',
         primary: true,
     })
-    id: number
+    tagId: number
     @Column({
-        name: 'TagName',
+        name: 'ExtUuidStr',
         width: 20,
-        comment: '标签名称',
-        primary: true,
+        comment: '插件唯一id列表，#隔开',
     })
-    tagName: string
+    extUuidStr: string
 }

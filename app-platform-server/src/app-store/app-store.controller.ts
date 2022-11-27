@@ -29,7 +29,7 @@ export class AppStoreController {
   }
 
   @Get('extMainDetail')
-  extMainDetail(@Query() extUuid: string) {
+  extMainDetail(@Query() extUuid: number) {
     return this.appStoreService.getExtMainDetail(extUuid)
   }
 

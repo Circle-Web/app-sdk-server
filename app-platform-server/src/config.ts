@@ -7,5 +7,5 @@ export const DatabaseConfig = {
 }
 
 export const JwtConstants = {
-    secret: '!@#$%',
+    secret: '!@#$%1',
 };

@@ -11,7 +11,6 @@ import { ResultFactory } from 'src/utils/result/resultFactory';
 export class AuthService {
   constructor(
     private readonly usersService: UserService,
-    private readonly adminService: AdminService,
     private readonly jwtService: JwtService,
   ) { }
 
@@ -36,7 +35,7 @@ export class AuthService {
     };
     try {
       const token = this.jwtService.sign(payload);
-      return ResultFactory.success({ token });
+      return ResultFactory.success({ token: token, roleId: user.roleId, username: user.username });
     } catch (error) {
       return ResultFactory.create(ResultCode.SUCCESS);
     }
