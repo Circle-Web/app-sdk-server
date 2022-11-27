@@ -38,4 +38,40 @@ export class ExtOperateController {
         return this.extOperateService.updateVersion(request.user.id, dto)
     }
 
+    // 提交测试
+    @Post('versionCommitTest')
+    versionCommitTest(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionCommitTest(request.user.id, extVersionId)
+    }
+
+    // 取消测试
+    @Post('versionTestBack')
+    versionTestBack(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionTestBack(request.user.id, extVersionId)
+    }
+
+    // 提交审核
+    @Post('versionCommitJudge')
+    versionCommitJudge(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionCommitJudge(request.user.id, extVersionId)
+    }
+
+    // 取消审核
+    @Post('versionBackJudge')
+    versionBackJudge(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionBackJudge(request.user.id, extVersionId)
+    }
+
+    // 提交线上
+    @Post('versionCommitOnline')
+    versionCommitOnline(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionCommitOnline(request.user.id, extVersionId)
+    }
+
+    // 取消线上版本
+    @Post('versionBackOnline')
+    versionBackOnline(@Req() request, @Body() extVersionId: number) {
+        return this.extOperateService.versionBackOnline(request.user.id, extVersionId)
+    }
+
 }

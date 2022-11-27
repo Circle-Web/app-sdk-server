@@ -4,6 +4,9 @@ import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
 import { ExtStatus } from '../data/extStatus';
+import { ExtVersionAudit } from '../data/extVersionAudit';
+import { ExtVersionOnline } from '../data/extVersionOnline';
+import { ExtVersionType } from '../data/extVersionType';
 import { UpdateExtDto } from '../dto/update-ext.dto';
 import { ExtMainDetailDO } from '../entities/ext-main-detail.entity';
 import { ExtVersionDO } from '../entities/ext-version.entity';
@@ -98,6 +101,110 @@ export class ExtOperateService {
         versionDO.extLogo = dto.extLogo
         versionDO.extMarketSnapshots = dto.extMarketSnapshots.join("#")
         versionDO.extName = dto.extName
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionCommitTest(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.DEV) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_ERROR)
+        }
+        versionDO.extVersionType = ExtVersionType.TEST
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionTestBack(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.TEST) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_DEV_ERROR)
+        }
+        versionDO.extVersionType = ExtVersionType.DEV
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionCommitJudge(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.TEST) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_AUDIT_ERROR)
+        }
+        versionDO.extVersionAudit = ExtVersionAudit.AUDITTING
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionBackJudge(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.TEST || versionDO.extVersionAudit != ExtVersionAudit.AUDITTING) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR)
+        }
+        versionDO.extVersionAudit = ExtVersionAudit.NOT_AUDIT
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionCommitOnline(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.TEST && versionDO.extVersionAudit != ExtVersionAudit.AUDIT_SUCCESS) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_AUDIT_ERROR)
+        }
+        versionDO.extVersionType = ExtVersionType.ONLINE
+        versionDO.extVersionOnline = ExtVersionOnline.ONLINE
+        this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success()
+    }
+
+    async versionBackOnline(extAuthorId: number, extVersionId: number) {
+        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!versionDO) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        if (!extMainDetail) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
+        }
+        if (versionDO.extVersionType != ExtVersionType.ONLINE) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR)
+        }
+        versionDO.extVersionType = ExtVersionType.TEST
+        versionDO.extVersionOnline = ExtVersionOnline.OFFLINE
         this.versionRep.update(extVersionId, versionDO)
         return ResultFactory.success()
     }

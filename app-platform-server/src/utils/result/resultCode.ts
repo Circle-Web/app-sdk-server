@@ -8,6 +8,11 @@ export const enum ResultCode {
     UPDATE_EXT_DATA_FAIL = 1003,
     CREATE_EXT_VERSION_FAIL_EXT_NOT_EXIST = 1004,
     GET_EXT_FAIL_EXT_NOT_EXIST = 1005,
+    UPDATE_EXT_VERSION_AUDIT_FAIL = 1006,
+    UPDATE_EXT_DATA_FAIL_VERSION_TYPE_ERROR = 1007,
+    UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_DEV_ERROR = 1008,
+    UPDATE_EXT_DATA_FAIL_VERSION_TYPE_AUDIT_ERROR = 1009,
+    UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR = 1010,
 }
 
 export const codeMap: Record<ResultCode, string> = {
@@ -21,4 +26,9 @@ export const codeMap: Record<ResultCode, string> = {
     [ResultCode.UPDATE_EXT_DATA_FAIL]: '更新失败：该小程序不存在',
     [ResultCode.CREATE_EXT_VERSION_FAIL_EXT_NOT_EXIST]: '创建版本失败：该小程序不存在',
     [ResultCode.GET_EXT_FAIL_EXT_NOT_EXIST]: '获取失败：该小程序不存在',
+    [ResultCode.UPDATE_EXT_VERSION_AUDIT_FAIL]: '提交失败：概要/描述/屏幕快照信息不能为空，请先设置',
+    [ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_ERROR]: '提交失败：当前不是开发版本，无法提交测试',
+    [ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_DEV_ERROR]: '回退失败：当前不是测试版本，无法回退修改',
+    [ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_AUDIT_ERROR]: '提交失败：当前不是测试版本，无法提交审核',
+    [ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR]: '回退失败：当前不是审核版本，无法回退测试',
 };

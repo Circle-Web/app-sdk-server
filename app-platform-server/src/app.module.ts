@@ -21,7 +21,7 @@ import { UserModule } from './user/user.module';
       password: DatabaseConfig.password,
       database: DatabaseConfig.database,
       entities: [UserDO, ExtMainDetailDO, ExtVersionDO],
-      synchronize: true,
+      synchronize: DatabaseConfig.synchronize,
     }),
     AuthModule,
     UserModule,
