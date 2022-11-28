@@ -1,4 +1,4 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { TagService } from 'src/tag/tag.service';
 import { AppStoreService } from './app-store.service';
 import { ExtListDto } from './dto/ext-list.dto';
@@ -33,4 +33,15 @@ export class AppStoreController {
     return this.appStoreService.getExtMainDetail(extUuid)
   }
 
+  // 安装小程序
+  @Post('installExt')
+  installExt(@Query() extUuid: number) {
+    return this.appStoreService.uninstallExt(extUuid)
+  }
+
+  // 取消小程序
+  @Post('uninstallExt')
+  uninstallExt(@Query() extUuid: number) {
+    return this.appStoreService.uninstallExt(extUuid)
+  }
 }

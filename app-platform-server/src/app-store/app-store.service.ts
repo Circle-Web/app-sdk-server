@@ -10,6 +10,9 @@ import { ExtVersionDO } from './entities/ext-version.entity';
 
 @Injectable()
 export class AppStoreService {
+  uninstallExt(extUuid: number) {
+    throw new Error('Method not implemented.');
+  }
   constructor(
     @InjectRepository(ExtMainDetailDO)
     private readonly rep: Repository<ExtMainDetailDO>,
