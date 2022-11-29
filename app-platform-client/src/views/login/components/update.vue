@@ -13,13 +13,10 @@ import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 const { t } = useI18n();
 const loading = ref(false);
 const ruleForm = reactive({
-  phone: "",
-  verifyCode: "",
   password: "",
   repeatPassword: ""
 });
 const ruleFormRef = ref<FormInstance>();
-const { isDisabled, text } = useVerifyCode();
 const repeatPasswordRule = [
   {
     validator: (rule, value, callback) => {
@@ -65,41 +62,6 @@ function onBack() {
     :rules="updateRules"
     size="large"
   >
-    <Motion>
-      <el-form-item prop="phone">
-        <el-input
-          clearable
-          v-model="ruleForm.phone"
-          :placeholder="t('login.phone')"
-          :prefix-icon="useRenderIcon('iphone')"
-        />
-      </el-form-item>
-    </Motion>
-
-    <Motion :delay="100">
-      <el-form-item prop="verifyCode">
-        <div class="w-full flex justify-between">
-          <el-input
-            clearable
-            v-model="ruleForm.verifyCode"
-            :placeholder="t('login.smsVerifyCode')"
-            :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
-          />
-          <el-button
-            :disabled="isDisabled"
-            class="ml-2"
-            @click="useVerifyCode().start(ruleFormRef, 'phone')"
-          >
-            {{
-              text.length > 0
-                ? text + t("login.info")
-                : t("login.getVerifyCode")
-            }}
-          </el-button>
-        </div>
-      </el-form-item>
-    </Motion>
-
     <Motion :delay="150">
       <el-form-item prop="password">
         <el-input

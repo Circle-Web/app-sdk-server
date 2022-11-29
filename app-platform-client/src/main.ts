@@ -6,7 +6,6 @@ import { useI18n } from "@/plugins/i18n";
 import { getServerConfig } from "./config";
 import { createApp, Directive } from "vue";
 import { MotionPlugin } from "@vueuse/motion";
-// import { useEcharts } from "@/plugins/echarts";
 import { useTable } from "@/plugins/vxe-table";
 import VirtualScroller from "vue-virtual-scroller";
 import { injectResponsiveStorage } from "@/utils/responsive";
@@ -28,6 +27,7 @@ import "@pureadmin/components/dist/dark.scss";
 // import "./assets/iconfont/iconfont.css";
 import "v-contextmenu/dist/themes/default.css";
 import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
+import { Modal } from "@/views/myApp/components/dialog/useDialog";
 
 const app = createApp(App);
 
@@ -63,7 +63,7 @@ getServerConfig(app).then(async config => {
     .use(Table)
     .use(PureDescriptions)
     .use(useTable)
-    // .use(useEcharts)
+    .use(Modal)
     .use(VirtualScroller);
   app.mount("#app");
 });

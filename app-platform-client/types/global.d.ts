@@ -89,6 +89,8 @@ declare global {
     VITE_ROUTER_HISTORY: string;
     VITE_CDN: boolean;
     VITE_COMPRESSION: ViteCompression;
+    /** 代理的地址 */
+    VITE_PROXY_TARGET: string;
   }
 
   declare interface ServerConfigs {

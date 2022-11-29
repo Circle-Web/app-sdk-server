@@ -1,28 +1,21 @@
 <script setup lang="ts">
-import {
-  ref,
-  reactive,
-  watch,
-  computed,
-  onMounted,
-  onBeforeUnmount
-} from "vue";
+import { ref, reactive, computed, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import Motion from "./utils/motion";
 import { useRouter } from "vue-router";
+import { message } from "@/utils/message";
 import { loginRules } from "./utils/rule";
 import TypeIt from "@/components/ReTypeit";
 import regist from "./components/regist.vue";
-// import update from "./components/update.vue";
+import update from "./components/update.vue";
 import { initRouter } from "@/router/utils";
 import { useNav } from "@/layout/hooks/useNav";
-import { message } from "@pureadmin/components";
 import type { FormInstance } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
+import { operates } from "./utils/enums";
 import { useLayout } from "@/layout/hooks/useLayout";
 import { useUserStoreHook } from "@/store/modules/user";
 import { bg, avatar, currentWeek } from "./utils/static";
-import { ReImageVerify } from "@/components/ReImageVerify";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { useTranslationLang } from "@/layout/hooks/useTranslationLang";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
@@ -35,10 +28,10 @@ defineOptions({
   name: "Login"
 });
 
-const imgCode = ref("");
+// const imgCode = ref("");
 const router = useRouter();
 const loading = ref(false);
-const checked = ref(false);
+const checked = ref(true);
 const ruleFormRef = ref<FormInstance>();
 const currentPage = computed(() => {
   return useUserStoreHook().currentPage;
@@ -53,9 +46,8 @@ const { title, getDropdownItemStyle, getDropdownItemClass } = useNav();
 const { locale, translationCh, translationEn } = useTranslationLang();
 
 const ruleForm = reactive({
-  username: "admin",
-  password: "admin123",
-  verifyCode: ""
+  username: "123",
+  password: "123"
 });
 
 const onLogin = async (formEl: FormInstance | undefined) => {
@@ -64,15 +56,25 @@ const onLogin = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       useUserStoreHook()
-        .loginByUsername({ username: ruleForm.username, password: "admin123" })
-        .then(res => {
-          if (res.success) {
-            // 获取后端路由
-            initRouter().then(() => {
-              message.success("登录成功");
-              router.push("/");
-            });
-          }
+        .loginByUsername({
+          account: ruleForm.username,
+          password: ruleForm.password
+        })
+        .then(() => {
+          initRouter().then(() => {
+            router.push("/");
+            message("登录成功", { type: "success" });
+          });
+          // initRouter().then(() => {
+          //   router.push("/");
+          //   message("登录成功", { type: "success" });
+          // });
+        })
+        .catch(err => {
+          message(err.msg || err.message || err, { type: "error" });
+        })
+        .finally(() => {
+          loading.value = false;
         });
     } else {
       loading.value = false;
@@ -94,10 +96,6 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.document.removeEventListener("keypress", onkeypress);
-});
-
-watch(imgCode, value => {
-  useUserStoreHook().SET_VERIFYCODE(value);
 });
 </script>
 
@@ -198,21 +196,6 @@ watch(imgCode, value => {
               </el-form-item>
             </Motion>
 
-            <Motion :delay="200">
-              <el-form-item prop="verifyCode">
-                <el-input
-                  clearable
-                  v-model="ruleForm.verifyCode"
-                  :placeholder="t('login.verifyCode')"
-                  :prefix-icon="useRenderIcon('ri:shield-keyhole-line')"
-                >
-                  <template v-slot:append>
-                    <ReImageVerify v-model:code="imgCode" />
-                  </template>
-                </el-input>
-              </el-form-item>
-            </Motion>
-
             <Motion :delay="250">
               <el-form-item>
                 <div class="w-full h-[20px] flex justify-between items-center">
@@ -238,11 +221,29 @@ watch(imgCode, value => {
                 </el-button>
               </el-form-item>
             </Motion>
+
+            <Motion :delay="300">
+              <el-form-item>
+                <div class="w-full h-[20px] flex justify-between items-center">
+                  <el-button
+                    v-for="(item, index) in operates"
+                    :key="index"
+                    class="w-full mt-4"
+                    size="default"
+                    @click="
+                      useUserStoreHook().SET_CURRENTPAGE(item.currentPage)
+                    "
+                  >
+                    {{ t(item.title) }}
+                  </el-button>
+                </div>
+              </el-form-item>
+            </Motion>
           </el-form>
           <!-- 注册 -->
           <regist v-if="currentPage === 3" />
           <!-- 忘记密码 -->
-          <!-- <update v-if="currentPage === 4" /> -->
+          <update v-if="currentPage === 4" />
         </div>
       </div>
     </div>

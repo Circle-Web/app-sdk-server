@@ -36,6 +36,7 @@ const homeRouter: RouteConfigsTable = {
       component: () => import("@/views/appDetail/index.vue"),
       meta: {
         title: $t("menus.hsExtAppDetail"),
+        icon: "list",
         showLink: false
       }
     }

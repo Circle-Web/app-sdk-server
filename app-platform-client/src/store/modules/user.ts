@@ -48,7 +48,7 @@ export const useUserStore = defineStore({
         getLogin(data)
           .then(data => {
             if (data) {
-              setToken(data.data);
+              // setToken(data.data);
               resolve(data);
             }
           })
@@ -65,22 +65,22 @@ export const useUserStore = defineStore({
       router.push("/login");
       useMultiTagsStoreHook().handleTags("equal", [...routerArrays]);
       resetRouter();
-    },
-    /** 刷新`token` */
-    async handRefreshToken(data) {
-      return new Promise<RefreshTokenResult>((resolve, reject) => {
-        refreshTokenApi(data)
-          .then(data => {
-            if (data) {
-              setToken(data.data);
-              resolve(data);
-            }
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
     }
+    /** 刷新`token` */
+    // async handRefreshToken(data) {
+    //   return new Promise<RefreshTokenResult>((resolve, reject) => {
+    //     refreshTokenApi(data)
+    //       .then(data => {
+    //         if (data) {
+    //           setToken(data.data);
+    //           resolve(data);
+    //         }
+    //       })
+    //       .catch(error => {
+    //         reject(error);
+    //       });
+    //   });
+    // }
   }
 });
 

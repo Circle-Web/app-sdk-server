@@ -30,10 +30,14 @@ export type RefreshTokenResult = {
 
 /** 登录 */
 export const getLogin = (data?: object) => {
-  return http.request<UserResult>("post", "/login", { data });
+  return http.request<UserResult>("post", "/user/login", { data });
 };
 
 /** 刷新token */
 export const refreshTokenApi = (data?: object) => {
   return http.request<RefreshTokenResult>("post", "/refreshToken", { data });
+};
+
+export const register = (data?: object) => {
+  return http.request<UserResult>("post", "/user/register", { data });
 };
