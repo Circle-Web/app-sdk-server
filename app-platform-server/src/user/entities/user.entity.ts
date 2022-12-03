@@ -47,7 +47,6 @@ export class UserDO {
     @CreateDateColumn({
         name: 'CreatedTime',
         type: 'datetime',
-        nullable: true,
         comment: '添加时间',
     })
     createdTime: Date;
@@ -55,7 +54,6 @@ export class UserDO {
     @UpdateDateColumn({
         name: 'UpdatedTime',
         type: 'datetime',
-        nullable: true,
         comment: '更新时间',
     })
     updatedTime: Date;

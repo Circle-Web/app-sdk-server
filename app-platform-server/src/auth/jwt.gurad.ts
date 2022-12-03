@@ -17,7 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         const ctx = context.switchToHttp();
         const request = ctx.getRequest();
         const requestUrl = request.url;
-        if (this.options.ignoreApi.includes(requestUrl)) {
+        if (this.options.ignoreApi.filter(api => requestUrl.includes(api)).length) {
             return true;
         }
 

@@ -1,23 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import _ from 'lodash';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ExtStatus } from './data/extStatus';
 import { ExtVersionOnline } from './data/extVersionOnline';
+import { ExtInstallDO } from './entities/ext-install.entity';
 import { ExtMainDetailDO } from './entities/ext-main-detail.entity';
 import { ExtVersionDO } from './entities/ext-version.entity';
 
 @Injectable()
 export class AppStoreService {
-  uninstallExt(extUuid: number) {
-    throw new Error('Method not implemented.');
-  }
+
   constructor(
     @InjectRepository(ExtMainDetailDO)
     private readonly rep: Repository<ExtMainDetailDO>,
     @InjectRepository(ExtVersionDO)
     private readonly versionRep: Repository<ExtVersionDO>,
+    @InjectRepository(ExtInstallDO)
+    private readonly installRep: Repository<ExtInstallDO>,
   ) { }
 
   async getExtMainDetail(extUuid: number) {
@@ -27,9 +29,13 @@ export class AppStoreService {
     if (!data) {
       return ResultFactory.create(ResultCode.GET_EXT_FAIL_EXT_NOT_EXIST)
     }
-    const { extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
-      keywords, extVersion, createTime, updateTime } =
+    const versionData =
       await this.versionRep.findOne({ where: { extUuid, extVersionOnline: ExtVersionOnline.ONLINE } })
+    if (!versionData) {
+      return ResultFactory.create(ResultCode.GET_EXT_FAIL_EXT_NOT_EXIST)
+    }
+    const { extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
+      keywords, extVersion, createTime, updateTime } = versionData
     return ResultFactory.success({
       extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots: extMarketSnapshots?.split("#") ?? [],
       keywords: keywords?.split("#") ?? [], extVersion, createTime, updateTime
@@ -45,10 +51,52 @@ export class AppStoreService {
       })
   }
 
-  async findExtList(key: string) {
-    const versionList =
-      await this.versionRep.find({ where: { extVersionOnline: ExtVersionOnline.ONLINE } })
-    return ResultFactory.success(versionList.filter(e => e.extName.includes(key)))
+  async findExtListResult(key = "", extUuids: number[] = []) {
+    return ResultFactory.success(await this.findExtList(key, extUuids))
+  }
+
+  async findExtList(key = "", extUuids: number[] = []) {
+    let versionList: ExtVersionDO[]
+    if (extUuids.length) {
+      versionList = await this.versionRep.find({ where: { extUuid: In(extUuids), extVersionOnline: ExtVersionOnline.ONLINE } })
+    } else {
+      versionList = await this.versionRep.find({ where: { extVersionOnline: ExtVersionOnline.ONLINE } })
+    }
+    return versionList.filter(e => e.extName.includes(key))
+  }
+
+  async installedExtList(serverId: string) {
+    const data = await this.installRep.find({
+      where: { serverId }
+    })
+    const versionList = await this.findExtList("", data.map(d => d.id))
+    return ResultFactory.success(_.unionBy(versionList, 'extUuid'))
+  }
+
+  async installExt(serverId: string, userId: string, extUuid: number) {
+    const data = await this.installRep.findOne({
+      where: { serverId, userId, extUuid }
+    })
+    if (data) {
+      return ResultFactory.create(ResultCode.IM_EXT_INSTALLED)
+    }
+    const installDO = this.installRep.create()
+    installDO.serverId = serverId
+    installDO.userId = userId
+    installDO.extUuid = extUuid
+    this.installRep.save(installDO)
+    return ResultFactory.success()
+  }
+
+  async uninstallExt(serverId: string, userId: string, extUuid: number) {
+    const data = await this.installRep.findOne({
+      where: { serverId, userId, extUuid }
+    })
+    if (!data) {
+      return ResultFactory.create(ResultCode.IM_EXT_UNINSTALLED)
+    }
+    this.installRep.delete(data.id)
+    return ResultFactory.success()
   }
 
 }

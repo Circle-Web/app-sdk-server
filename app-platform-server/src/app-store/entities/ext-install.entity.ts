@@ -1,38 +1,33 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 
-@Entity('ext_main_detail')
-export class ExtMainDetailDO {
+@Entity('ext_install')
+export class ExtInstallDO {
     @PrimaryGeneratedColumn({
+        name: 'Id',
+        comment: '唯一id',
+    })
+    id: number
+    @Column({
+        name: 'ServerId',
+        type: 'varchar',
+        width: 255,
+        comment: '社区id',
+    })
+    serverId: string
+    @Column({
         name: 'ExtUuid',
-        comment: '插件唯一id',
+        type: 'varchar',
+        width: 255,
+        comment: '插件唯一id'
     })
     extUuid: number
     @Column({
-        name: 'ExtName',
+        name: 'UserId',
         type: 'varchar',
         width: 255,
-        comment: '插件名称',
+        comment: '插件被安装的用户id',
     })
-    extName: string
-    @Column({
-        name: 'ExtLogo',
-        type: 'varchar',
-        width: 255,
-        comment: '插件logo地址url',
-        default: ''
-    })
-    extLogo: string
-    @Column({
-        name: 'ExtAuthorId',
-        comment: '插件的作者用户id',
-    })
-    extAuthorId: number
-    @Column({
-        name: 'ExtStatus',
-        comment: '插件是否上架，0没上架，1上架',
-        default: 0
-    })
-    extStatus: number
+    userId: string
     @CreateDateColumn({
         name: 'CreatedTime',
         type: 'datetime',
