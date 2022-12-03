@@ -10,6 +10,8 @@ import { ExtQueryModule } from './app-store/ext-query/ext-query.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/index';
 import { ImModule } from './im/im.module';
+import { SignRecordDO } from './sign-ext/entities/sign-record.entity';
+import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
 import { UserDO } from './user/entities/user.entity';
 import { UserController } from './user/user.controller';
@@ -30,7 +32,7 @@ import { UserModule } from './user/user.module';
       useFactory: (config: ConfigService) => {
         return {
           type: 'mysql',
-          entities: [UserDO, ExtMainDetailDO, ExtVersionDO, ExtInstallDO],
+          entities: [UserDO, ExtMainDetailDO, ExtVersionDO, ExtInstallDO, SignRecordDO],
           keepConnectionAlive: true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;
@@ -42,6 +44,7 @@ import { UserModule } from './user/user.module';
     AppStoreModule,
     ExtQueryModule,
     ExtOperateModule,
+    SignExtModule,
   ],
   controllers: [UserController],
   providers: [TagService],

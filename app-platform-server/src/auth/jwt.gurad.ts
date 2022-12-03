@@ -1,4 +1,4 @@
-import { ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
@@ -6,7 +6,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
         private readonly options = {
             match: /^\/api/,
-            getMatch: /^\/api(.*)(\/isauth)(\/){0,1}(.*)/,
+            getMatch: [/^\/api(.*)(\/sign-ext)(\/)/],
             ignoreApi: ['/user/login', '/user/register', '/appstore/tagList', '/appstore/extList', '/appstore/search', '/appstore/extMainDetail'],
         },
     ) {
@@ -20,7 +20,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         if (this.options.ignoreApi.filter(api => requestUrl.includes(api)).length) {
             return true;
         }
-
+        let res = super.canActivate(context)
+        for (const e of this.options.getMatch) {
+            if (e.test(requestUrl)) {
+                res = true
+            }
+        }
         // if (requestMethod === 'GET') {
         //     if (this.options.getMatch.test(requestUrl)) {
         //         return super.canActivate(context);
@@ -34,14 +39,14 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         // } else {
         //     return true;
         // }
-        return super.canActivate(context);
+        return res;
     }
 
     handleRequest(err, user) {
         console.log('handleRequest', err, user);
         if (err || !user) {
             // jwt 只解决登录态问题 409
-            throw new HttpException('登录态已失效', HttpStatus.CONFLICT);
+            // throw new HttpException('登录态已失效', HttpStatus.CONFLICT);
         }
         return user;
     }
