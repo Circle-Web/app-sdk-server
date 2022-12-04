@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
@@ -36,6 +37,7 @@ export class ExtOperateService {
         if (createRes.error()) {
             return createRes
         }
+        dto.extVersionId = createRes.getValue().extVersionId
         return this.updateVersion(extAuthorId, dto)
     }
 
@@ -59,7 +61,7 @@ export class ExtOperateService {
         return ResultFactory.success()
     }
 
-    async createVersion(extAuthorId: number, extUuid: number, version: string) {
+    async createVersion(extAuthorId: number, extUuid: number, version: string): Promise<Result<any>> {
         if (!this.validateVersionFormat(version)) {
             return ResultFactory.create(ResultCode.CREATE_EXT_VERSION_FAIL)
         }
@@ -68,11 +70,11 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.CREATE_EXT_VERSION_FAIL_EXT_NOT_EXIST)
         }
         const _do = this.versionRep.create({ extUuid, extName: extMainDetailDO.extName, extLogo: extMainDetailDO.extLogo, extVersion: version })
-        const { extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
+        const { extVersionId, extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
             keywords, extVersion, createTime, updateTime } = await this.versionRep.save(_do)
 
         return ResultFactory.success({
-            extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots: extMarketSnapshots?.split("#") ?? [],
+            extVersionId, extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots: extMarketSnapshots?.split("#") ?? [],
             keywords: keywords?.split("#") ?? [], extVersion, createTime, updateTime
         })
     }
