@@ -6,7 +6,6 @@ const createMount = opts => {
   document.body.appendChild(mountNode);
   const vnode = h(Dialog, {
     ...opts,
-    modelValue: true,
     remove() {
       document.body.removeChild(mountNode);
     }
@@ -15,10 +14,7 @@ const createMount = opts => {
   render(vnode, mountNode);
 };
 
-interface ModalOptions {
-  title?: string;
-  id?: string;
-}
+
 
 export const Modal = {
   install(app) {

@@ -11,7 +11,8 @@ import {
 } from "./types.d";
 import { stringify } from "qs";
 import NProgress from "../progress";
-import { getToken, formatToken } from "@/utils/auth";
+import { formatToken, getToken } from "@/utils/auth";
+import type { IResponse } from "@/api/app";
 
 // 相关配置请参考：www.axios-js.com/zh-cn/docs/#axios-request-config-1
 const defaultConfig: AxiosRequestConfig = {
@@ -63,6 +64,14 @@ class PureHttp {
       async (config: PureHttpRequestConfig) => {
         // 开启进度条动画
         NProgress.start();
+        /**
+         * 注入 token
+         */
+        const token = getToken()?.token
+        if (token) {
+          config.headers["Authorization"] = formatToken(token);
+        }
+
         // 优先判断post/get等方法是否传入回掉，否则执行初始化设置等回掉
         if (typeof config.beforeRequestCallback === "function") {
           config.beforeRequestCallback(config);
@@ -119,7 +128,7 @@ class PureHttp {
     url: string,
     param?: AxiosRequestConfig,
     axiosConfig?: PureHttpRequestConfig
-  ): Promise<T> {
+  ): Promise<IResponse<T>> {
     const config = {
       method,
       url,
@@ -131,7 +140,7 @@ class PureHttp {
     return new Promise((resolve, reject) => {
       PureHttp.axiosInstance
         .request(config)
-        .then((response: undefined) => {
+        .then((response: any) => {
           resolve(response);
         })
         .catch(error => {
@@ -145,7 +154,7 @@ class PureHttp {
     url: string,
     params?: T,
     config?: PureHttpRequestConfig
-  ): Promise<P> {
+  ): Promise<IResponse<P>> {
     return this.request<P>("post", url, params, config);
   }
 
@@ -154,7 +163,7 @@ class PureHttp {
     url: string,
     params?: T,
     config?: PureHttpRequestConfig
-  ): Promise<P> {
+  ): Promise<IResponse<P>> {
     return this.request<P>("get", url, params, config);
   }
 }

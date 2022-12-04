@@ -36,7 +36,7 @@ module.exports = {
     "plugin:vue/vue3-essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
-    "@vue/prettier",
+    // "@vue/prettier",
     "@vue/eslint-config-typescript"
   ],
   parser: "vue-eslint-parser",
@@ -49,8 +49,7 @@ module.exports = {
       jsx: true
     }
   },
-  overrides: [
-    {
+  overrides: [{
       files: ["*.ts", "*.vue"],
       rules: {
         "no-undef": "off"
@@ -109,12 +108,12 @@ module.exports = {
         argsIgnorePattern: "^_",
         varsIgnorePattern: "^_"
       }
-    ],
-    "prettier/prettier": [
-      "error",
-      {
-        endOfLine: "auto"
-      }
     ]
+    // "prettier/prettier": [
+    //   "error",
+    //   {
+    //     endOfLine: "auto"
+    //   }
+    // ]
   }
 }

@@ -31,3 +31,9 @@ declare type ForDataType<T> = {
 };
 
 declare type AnyFunction<T> = (...args: any[]) => T;
+
+
+declare interface ModalOptions {
+  title?: string;
+  id?: string;
+}

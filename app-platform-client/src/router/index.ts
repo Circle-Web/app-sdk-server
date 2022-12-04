@@ -15,7 +15,6 @@ import {
 import {
   ascending,
   initRouter,
-  isOneOfArray,
   getHistoryMode,
   findRouteByPath,
   handleAliveRoute,
@@ -98,7 +97,7 @@ router.beforeEach((to: toRouteType, _from, next) => {
       handleAliveRoute(newMatched);
     }
   }
-  const userInfo = storageSession.getItem<DataInfo<number>>(sessionKey);
+  const userInfo = storageSession.getItem<DataInfo>(sessionKey);
   NProgress.start();
   const externalLink = isUrl(to?.name as string);
   if (!externalLink) {
@@ -116,9 +115,9 @@ router.beforeEach((to: toRouteType, _from, next) => {
   }
   if (userInfo) {
     // 无权限跳转403页面
-    if (to.meta?.roles && !isOneOfArray(to.meta?.roles, userInfo?.roles)) {
-      next({ path: "/error/403" });
-    }
+    // if (to.meta?.roles && !isOneOfArray(to.meta?.roles, userInfo?.roleId)) {
+    //   next({ path: "/error/403" });
+    // }
     if (_from?.name) {
       // name为超链接
       if (externalLink) {

@@ -3,18 +3,26 @@ import type {
   VNode,
   ComponentPublicInstance,
   FunctionalComponent,
-  PropType as VuePropType
+  PropType as VuePropType,
+  Component
 } from "vue";
 import type { ECharts } from "echarts";
 import { type ResponsiveStorage } from "./index";
 
 // GlobalComponents for Volar
+
 declare module "vue" {
   export interface GlobalComponents {
     IconifyIconOffline: typeof import("../src/components/ReIcon")["IconifyIconOffline"];
     IconifyIconOnline: typeof import("../src/components/ReIcon")["IconifyIconOnline"];
     FontIcon: typeof import("../src/components/ReIcon")["FontIcon"];
     Auth: typeof import("../src/components/ReAuth")["Auth"];
+  }
+
+  export interface ComponentCustomProperties {
+    $myDialog: {
+      show: (title: string, component: Component, options?: ModalOptions) => void
+    }
   }
 }
 

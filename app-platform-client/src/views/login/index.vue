@@ -63,15 +63,15 @@ const onLogin = async (formEl: FormInstance | undefined) => {
         .then(() => {
           initRouter().then(() => {
             router.push("/");
-            message("登录成功", { type: "success" });
+            message("登录成功", {
+              type: "success"
+            });
           });
-          // initRouter().then(() => {
-          //   router.push("/");
-          //   message("登录成功", { type: "success" });
-          // });
         })
         .catch(err => {
-          message(err.msg || err.message || err, { type: "error" });
+          message(err.msg || err.message || err, {
+            type: "error"
+          });
         })
         .finally(() => {
           loading.value = false;

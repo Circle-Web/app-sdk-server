@@ -51,7 +51,7 @@ export default ({ command, mode }: ConfigEnv): UserConfigExport => {
         "/api": {
           target: VITE_PROXY_TARGET,
           changeOrigin: true,
-          rewrite: path => path.replace(/^\/api/, "")
+          rewrite: path => path.replace(/^\/api/, "/api")
         }
       }
     },
