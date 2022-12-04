@@ -29,9 +29,7 @@ export class SignExtService {
         return ResultFactory.create(ResultCode.SIGN_EXT_SIGN_FAIL)
       }
     }
-    record = this.signRecordDao.create()
-    record.serverId = serverId
-    record.username = username
+    record = this.signRecordDao.create({serverId, username})
     record = await this.signRecordDao.save(record)
     ownRecordList.push(record)
     recordList.push(record)

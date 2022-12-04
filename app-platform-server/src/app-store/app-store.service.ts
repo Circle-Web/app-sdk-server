@@ -80,11 +80,8 @@ export class AppStoreService {
     if (data) {
       return ResultFactory.create(ResultCode.IM_EXT_INSTALLED)
     }
-    const installDO = this.installRep.create()
-    installDO.serverId = serverId
-    installDO.userId = userId
-    installDO.extUuid = extUuid
-    this.installRep.save(installDO)
+    const installDO = this.installRep.create({ serverId, userId, extUuid })
+    await this.installRep.save(installDO)
     return ResultFactory.success()
   }
 

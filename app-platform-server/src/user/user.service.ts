@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDO } from './entities/user.entity';
 
 @Injectable()
@@ -14,18 +13,15 @@ export class UserService {
   ) { }
 
   async register(username: string, account: string, password: string) {
-    let user = await this.userRepository.findOne({where:{account}})
-    if(user) {
+    let user = await this.userRepository.findOne({ where: { account } })
+    if (user) {
       ResultFactory.create(ResultCode.REGIESTER_FAIL)
     }
-    if(!username) {
-      username = '用户昵称'
+    if (!username) {
+      username = '默认用户昵称'
     }
-    user = this.userRepository.create()
-    user.username = username
-    user.account = account
-    user.password = password
-    this.userRepository.save(user)
+    user = this.userRepository.create({ username, account, password })
+    await this.userRepository.save(user)
     return ResultFactory.success();
   }
 
