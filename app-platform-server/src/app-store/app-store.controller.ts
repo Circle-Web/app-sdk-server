@@ -10,7 +10,7 @@ import { ExtListDto } from './dto/ext-list.dto';
 /**
  * 这里不用走鉴权
  */
-@Controller('appstore')
+@Controller('api/appstore')
 export class AppStoreController {
   constructor(
     private readonly appStoreService: AppStoreService,

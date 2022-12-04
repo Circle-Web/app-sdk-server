@@ -2,7 +2,7 @@ import { Controller, Get, Query, Req } from '@nestjs/common';
 import { PageParam } from 'src/common/dto/page.dto';
 import { ExtQueryService } from './ext-query.service';
 
-@Controller('extQuery')
+@Controller('api/extQuery')
 export class ExtQueryController {
   constructor(private readonly extQueryService: ExtQueryService) { }
 

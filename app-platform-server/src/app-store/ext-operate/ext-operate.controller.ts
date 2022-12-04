@@ -3,7 +3,7 @@ import { CreateExtDto } from '../dto/create-ext.dto';
 import { UpdateExtDto } from '../dto/update-ext.dto';
 import { ExtOperateService } from './ext-operate.service';
 
-@Controller('extOperate')
+@Controller('api/extOperate')
 export class ExtOperateController {
     constructor(
         private readonly extOperateService: ExtOperateService,
