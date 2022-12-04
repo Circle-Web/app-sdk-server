@@ -104,11 +104,11 @@ export class ExtOperateService {
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
-        versionDO.extMainUrl = dto.extMainUrl
-        versionDO.extBrief = dto.extBrief
-        versionDO.extDescription = dto.extDescription
+        versionDO.extMainUrl = dto.extMainUrl ?? ""
+        versionDO.extBrief = dto.extBrief ?? ""
+        versionDO.extDescription = dto.extDescription ?? ""
         versionDO.extLogo = dto.extLogo
-        versionDO.extMarketSnapshots = dto.extMarketSnapshots.join("#")
+        versionDO.extMarketSnapshots = dto.extMarketSnapshots?.join("#") ?? ""
         versionDO.extName = dto.extName
         await this.versionRep.update(extVersionId, versionDO)
         return ResultFactory.success(versionDO)

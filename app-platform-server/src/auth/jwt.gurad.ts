@@ -1,4 +1,4 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
@@ -42,11 +42,21 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
         return res;
     }
 
-    handleRequest(err, user) {
-        console.log('handleRequest', err, user);
+    handleRequest(err, user, info: any, context: ExecutionContext) {
+        const ctx = context.switchToHttp();
+        const request = ctx.getRequest();
+        const requestUrl = request.url;
+        if (this.options.ignoreApi.filter(api => requestUrl.includes(api)).length) {
+            return user;
+        }
+        for (const e of this.options.getMatch) {
+            if (e.test(requestUrl)) {
+                return user;
+            }
+        }
         if (err || !user) {
             // jwt 只解决登录态问题 409
-            // throw new HttpException('登录态已失效', HttpStatus.CONFLICT);
+            throw new HttpException('登录态已失效', HttpStatus.CONFLICT);
         }
         return user;
     }
