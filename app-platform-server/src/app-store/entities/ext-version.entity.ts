@@ -95,14 +95,12 @@ export class ExtVersionDO {
     @CreateDateColumn({
         name: 'CreatedTime',
         type: 'datetime',
-        nullable: true,
         comment: '添加时间',
     })
     createTime: Date
     @UpdateDateColumn({
         name: 'UpdatedTime',
         type: 'datetime',
-        nullable: true,
         comment: '更新时间',
     })
     updateTime: Date

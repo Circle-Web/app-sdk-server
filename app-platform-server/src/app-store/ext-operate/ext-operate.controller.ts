@@ -3,7 +3,7 @@ import { CreateExtDto } from '../dto/create-ext.dto';
 import { UpdateExtDto } from '../dto/update-ext.dto';
 import { ExtOperateService } from './ext-operate.service';
 
-@Controller('extOperate')
+@Controller('api/extOperate')
 export class ExtOperateController {
     constructor(
         private readonly extOperateService: ExtOperateService,
@@ -11,8 +11,8 @@ export class ExtOperateController {
 
     // 用户创建插件
     @Post('/createExt')
-    createExt(@Req() request, @Body() createExtDto: CreateExtDto) {
-        return this.extOperateService.createExt(request.user.id, createExtDto.extName)
+    createExt(@Req() request, @Body() dto: UpdateExtDto) {
+        return this.extOperateService.createExt(request.user.id, dto)
     }
 
     // 用户修改插件的上架状态

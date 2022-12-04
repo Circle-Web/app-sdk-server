@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
@@ -22,15 +23,22 @@ export class ExtOperateService {
         private readonly versionRep: Repository<ExtVersionDO>,
     ) { }
 
-    async createExt(extAuthorId: number, extName: string) {
+    async createExt(extAuthorId: number, dto: UpdateExtDto) {
+        const { extName } = dto
         const v = await this.rep.findOne({ where: { extName } });
         if (v) {
             return ResultFactory.create(ResultCode.CREATE_EXT_FAIL_RE_NAME);
         }
         const extVersion = ExtOperateService.EXT_VERSION;
-        const _do = this.rep.create({ extName, extAuthorId })
-        const { extUuid, extLogo } = await this.rep.save(_do);
-        return ResultFactory.success({ extUuid, extName, extLogo, extVersion });
+        const _do = this.rep.create({ extName, extAuthorId, extLogo: dto.extLogo })
+        const { extUuid } = await this.rep.save(_do);
+
+        const createRes = await this.createVersion(extAuthorId, extUuid, extVersion)
+        if (createRes.error()) {
+            return createRes
+        }
+        dto.extVersionId = createRes.getValue().extVersionId
+        return this.updateVersion(extAuthorId, dto)
     }
 
     async reOnlineExt(extAuthorId: number, extUuid: number) {
@@ -53,7 +61,7 @@ export class ExtOperateService {
         return ResultFactory.success()
     }
 
-    async createVersion(extAuthorId: number, extUuid: number, version: string) {
+    async createVersion(extAuthorId: number, extUuid: number, version: string): Promise<Result<any>> {
         if (!this.validateVersionFormat(version)) {
             return ResultFactory.create(ResultCode.CREATE_EXT_VERSION_FAIL)
         }
@@ -62,23 +70,23 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.CREATE_EXT_VERSION_FAIL_EXT_NOT_EXIST)
         }
         const _do = this.versionRep.create({ extUuid, extName: extMainDetailDO.extName, extLogo: extMainDetailDO.extLogo, extVersion: version })
-        const { extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
+        const { extVersionId, extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots,
             keywords, extVersion, createTime, updateTime } = await this.versionRep.save(_do)
 
         return ResultFactory.success({
-            extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots: extMarketSnapshots?.split("#") ?? [],
+            extVersionId, extName, extLogo, extMainUrl, extBrief, extDescription, extMarketSnapshots: extMarketSnapshots?.split("#") ?? [],
             keywords: keywords?.split("#") ?? [], extVersion, createTime, updateTime
         })
     }
 
     validateVersionFormat(version: string) {
-        let arr = version.split('.')
+        const arr = version.split('.')
         if (arr.length != 3) {
             return false
         }
         for (let index = 0; index < arr.length; index++) {
             const element = arr[index];
-            var n = Number(element);
+            const n = Number(element);
             if (isNaN(n)) {
                 return false
             }
@@ -96,13 +104,14 @@ export class ExtOperateService {
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
-        versionDO.extBrief = dto.extBrief
-        versionDO.extDescription = dto.extDescription
+        versionDO.extMainUrl = dto.extMainUrl ?? ""
+        versionDO.extBrief = dto.extBrief ?? ""
+        versionDO.extDescription = dto.extDescription ?? ""
         versionDO.extLogo = dto.extLogo
-        versionDO.extMarketSnapshots = dto.extMarketSnapshots.join("#")
+        versionDO.extMarketSnapshots = dto.extMarketSnapshots?.join("#") ?? ""
         versionDO.extName = dto.extName
-        this.versionRep.update(extVersionId, versionDO)
-        return ResultFactory.success()
+        await this.versionRep.update(extVersionId, versionDO)
+        return ResultFactory.success(versionDO)
     }
 
     async versionCommitTest(extAuthorId: number, extVersionId: number) {

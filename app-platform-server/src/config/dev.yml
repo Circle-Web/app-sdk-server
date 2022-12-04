@@ -1,0 +1,55 @@
+# 开发环境配置
+app:
+  prefix: '/api'
+  port: 3000
+  swagger: true
+  logger:
+    # 项目日志存储路径，相对路径（相对本项目根目录）或绝对路径
+    dir: '../logs'
+
+# http
+http:
+  timeout: 5000
+
+# 数据库配置
+db:
+  mysql:
+    host: 'localhost'
+    username: 'root'
+    password: ''
+    database: 'app_platform'
+    port: 3306
+    charser: 'utf8mb4'
+    logger: 'advanced-console'
+    logging: true
+    multipleStatements: true
+    dropSchema: false
+    synchronize: true
+    supportBigNumbers: true
+    bigNumberStrings: true
+
+# jwt 配置
+jwt:
+  secret: '!@#$%^&*()_+'
+  expiresIn: '24h'
+  refreshExpiresIn: '2h'
+# 权限 白名单配置
+perm:
+  router:
+    whitelist: [{ path: '/api/register', method: 'POST'  }, { path: '/api/login', method: 'POST' }, { path: '/api/perm/{id}', method: 'GET' }, { path: '/api/oss/upload', method: 'POST' }]
+
+# 用户相关
+# 初始密码， 重置密码
+user:
+  initialPassword: 'Q123456'
+
+# 环信
+im:
+  host: ''
+  org_name: ''
+  app_name: ''
+  grant_type: ""
+  client_id: ""
+  client_secret: ""
+  ttl: "1024000"
+  base_url: https://${}/${}/${}/discord
