@@ -15,7 +15,7 @@ export class UserService {
   async register(username: string, account: string, password: string) {
     let user = await this.userRepository.findOne({ where: { account } })
     if (user) {
-      ResultFactory.create(ResultCode.REGIESTER_FAIL)
+      return ResultFactory.create(ResultCode.REGIESTER_FAIL)
     }
     if (!username) {
       username = '默认用户昵称'
