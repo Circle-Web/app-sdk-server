@@ -102,6 +102,7 @@ export class ExtOperateService {
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
+        versionDO.extMainUrl = dto.extMainUrl
         versionDO.extBrief = dto.extBrief
         versionDO.extDescription = dto.extDescription
         versionDO.extLogo = dto.extLogo
