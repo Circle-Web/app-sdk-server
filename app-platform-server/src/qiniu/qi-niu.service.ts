@@ -25,7 +25,7 @@ export class QiNiuService {
   getToken(userId: number) {
     const putPolicy = new qiniu.rs.PutPolicy(this.options)
     const uploadToken = putPolicy.uploadToken(this.mac)
-    return ResultFactory.success({ uploadToken, pictureKey: `${userId}_${+new Date}`, url: this.url })
+    return ResultFactory.success({ uploadToken, pictureKey: `logo/${userId}_${+new Date}`, url: this.url })
   }
 
 }
