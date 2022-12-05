@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Req } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
 import { QiNiuService } from './qi-niu.service';
 
-@Controller('qiniu')
+@Controller('api/qiniu')
 export class QiNiuController {
   constructor(private readonly qiNiuService: QiNiuService) { }
 
