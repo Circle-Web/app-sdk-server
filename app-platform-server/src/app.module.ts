@@ -10,6 +10,7 @@ import { ExtQueryModule } from './app-store/ext-query/ext-query.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/index';
 import { ImModule } from './im/im.module';
+import { QiNiuModule } from './qiniu/qi-niu.module';
 import { SignRecordDO } from './sign-ext/entities/sign-record.entity';
 import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
@@ -45,6 +46,7 @@ import { UserModule } from './user/user.module';
     ExtQueryModule,
     ExtOperateModule,
     SignExtModule,
+    QiNiuModule
   ],
   controllers: [UserController],
   providers: [TagService],

@@ -54,3 +54,9 @@ im:
   client_secret: ""
   ttl: "1024000"
   base_url: https://${}/${}/${}/discord
+
+# 七牛
+qiniu:
+  accessKey: ''
+  secretKey: ''
+  bucket: ''
