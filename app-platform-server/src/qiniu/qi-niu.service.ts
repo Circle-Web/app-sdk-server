@@ -10,10 +10,12 @@ export class QiNiuService {
   private secretKey: string
   private mac: any
   private options: any
+  private url: string
 
   constructor(private readonly configService: ConfigService) {
     this.accessKey = this.configService.get('qiniu.accessKey')
     this.secretKey = this.configService.get('qiniu.secretKey')
+    this.url = this.configService.get('qiniu.url')
     this.mac = new qiniu.auth.digest.Mac(this.accessKey, this.secretKey)
     this.options = {
       scope: this.configService.get('qiniu.bucket')
@@ -23,7 +25,7 @@ export class QiNiuService {
   getToken(userId: number) {
     const putPolicy = new qiniu.rs.PutPolicy(this.options)
     const uploadToken = putPolicy.uploadToken(this.mac)
-    return ResultFactory.success({ uploadToken, pictureKey: `${userId}_${+new Date}` })
+    return ResultFactory.success({ uploadToken, pictureKey: `${userId}_${+new Date}`, url: this.url })
   }
 
 }
