@@ -60,3 +60,4 @@ qiniu:
   accessKey: ''
   secretKey: ''
   bucket: ''
+  url: ''

@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import _ from 'lodash';
+// import _ from 'lodash';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require('lodash')
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { In, Repository } from 'typeorm';
