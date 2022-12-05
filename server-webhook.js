@@ -1,5 +1,5 @@
 const secret = "填github配置的secret";
-const repo = "/project/app-server-list";
+const repo = "/project/app-server-list/app-platform-server";
 
 const http = require('http');
 const crypto = require('crypto');
@@ -10,7 +10,8 @@ http.createServer(function (req, res) {
         let sig = "sha1=" + crypto.createHmac('sha1', secret).update(chunk.toString()).digest('hex');
 
         if (req.headers['x-hub-signature'] == sig) {
-            exec('cd ' + repo + ' && git pull && sh ./app-platform-server/start.sh');
+            exec('cd ' + repo + ' && sh ./start.sh');
+            console.log('webhook triggered, try git pull && start.')
         }
     });
     res.end();
