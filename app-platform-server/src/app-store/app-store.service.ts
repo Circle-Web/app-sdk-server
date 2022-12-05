@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import _ from 'lodash';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { In, Repository } from 'typeorm';
@@ -9,6 +8,9 @@ import { ExtVersionOnline } from './data/extVersionOnline';
 import { ExtInstallDO } from './entities/ext-install.entity';
 import { ExtMainDetailDO } from './entities/ext-main-detail.entity';
 import { ExtVersionDO } from './entities/ext-version.entity';
+// import _ from 'lodash';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const _ = require('lodash')
 
 @Injectable()
 export class AppStoreService {
