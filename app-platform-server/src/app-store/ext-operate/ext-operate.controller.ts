@@ -1,5 +1,4 @@
 import { Body, Controller, Post, Req } from '@nestjs/common';
-import { CreateExtDto } from '../dto/create-ext.dto';
 import { UpdateExtDto } from '../dto/update-ext.dto';
 import { ExtOperateService } from './ext-operate.service';
 

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import _ from 'lodash';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { ExtVersionType } from '../data/extVersionType';
 import { ExtMainDetailDO } from '../entities/ext-main-detail.entity';
 import { ExtVersionDO } from '../entities/ext-version.entity';
@@ -25,21 +26,24 @@ export class ExtQueryService {
     if (currentPage <= 0 || pageSize <= 0) {
       return ResultFactory.create(ResultCode.PARAM_ERROR)
     }
-    const data = await this.rep.createQueryBuilder()
+    const mainDetailDOList = await this.rep.createQueryBuilder()
       .where("extAuthorId = :extAuthorId", { extAuthorId })
       .skip(pageSize * (currentPage - 1))
       .take(pageSize).getMany();
-    return ResultFactory.success(data);
+    const versionList = await this.versionRep.find({
+      where: { extUuid: In(mainDetailDOList.map(d => d.extUuid)) }
+    })
+    return ResultFactory.success(_.unionBy(versionList, 'extUuid'));
   }
 
   async findOne(extAuthorId: number, extUuid: number) {
-    const data = await this.rep.findOne({
+    const mainDetail = await this.rep.findOne({
       where: { extUuid, extAuthorId }
     })
-    if (!data) {
+    if (!mainDetail) {
       return ResultFactory.create(ResultCode.GET_EXT_FAIL_EXT_NOT_EXIST)
     }
-    const { extName, extStatus, extLogo, createTime, updateTime } = data
+    const { extName, extStatus, extLogo, createTime, updateTime } = mainDetail
     const versionList = await this.versionRep.find({
       where: { extUuid }
     })

@@ -27,6 +27,7 @@ db:
     synchronize: true
     supportBigNumbers: true
     bigNumberStrings: true
+    timezone: "+08:00"
 
 # jwt 配置
 jwt:
