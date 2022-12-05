@@ -9,11 +9,20 @@
     ElInput,
     ElButton,
     ElMessage,
-    type FormInstance
+    ElUpload,
+    ElIcon,
+    type FormInstance,
+    UploadUserFile
   } from 'element-plus';
+  import {
+    Plus
+  } from '@element-plus/icons-vue'
   import {
     registerApp
   } from '@/api/app';
+  import {
+    createQiniuUploader
+  } from '@/api/qiniu'
 
 
   const formRef = ref < FormInstance > ()
@@ -24,6 +33,7 @@
     extDescription: "",
     extMainUrl: "",
     extSetting: "",
+    extLogo: "",
   });
 
   const loading = ref(false);
@@ -99,6 +109,25 @@
     emits('close')
   }
 
+  const fileList = ref < UploadUserFile[] > ()
+
+  const onFileChange = (file) => {
+    createQiniuUploader(file.raw).then((res) => {
+      res.subscribe({
+        next(res) {
+          console.log(res)
+        },
+        error(err) {
+          console.log(err)
+        },
+        complete(res) {
+          console.log(res)
+          form.extLogo = res.key
+        }
+      })
+    })
+  }
+
 </script>
 
 <template>
@@ -116,6 +145,14 @@
       </ElFormItem>
       <ElFormItem label="应用描述" prop="extDescription">
         <ElInput v-model="form.extDescription" :autosize="{ minRows: 3, maxRows: 4 }" type="textarea" resize="none" />
+      </ElFormItem>
+      <ElFormItem label="应用描述" prop="file">
+        <ElUpload action="#" list-type="picture-card" :auto-upload="false" :limit="1" :on-change="onFileChange"
+          v-model:file-list="fileList">
+          <ElIcon>
+            <Plus />
+          </ElIcon>
+        </ElUpload>
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="onCancel">取消</ElButton>
