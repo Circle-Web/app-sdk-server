@@ -31,9 +31,17 @@ export const getToken = () => {
 export const createQiniuUploader = async (file: File) => {
   const { value } = await getToken();
   const { uploadToken, pictureKey, url } = value;
-  return upload(file, pictureKey, uploadToken, {}, {
-    useCdnDomain: true,
-    region: region.z2,
-    uphost: [url]
-  });
+  return new Promise<string>((resolve, reject) => {
+    upload(file, pictureKey, uploadToken, {}, {
+      useCdnDomain: true,
+      region: region.z2,
+    }).subscribe({
+      error(err) {
+        reject(err)
+      },
+      complete(res) {
+        resolve(`http://${url}/${res.key}`)
+      }
+    })
+  })
 }

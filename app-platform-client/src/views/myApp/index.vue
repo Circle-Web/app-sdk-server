@@ -17,6 +17,7 @@
   import {
     useRouter
   } from "vue-router";
+  import Logo from '@/assets/logo.png'
 
   import Add from './components/add/add.vue';
 
@@ -64,7 +65,7 @@
         @click="handleClick(item)">
         <div class="ext__card-body">
           <div class="ext__body-left">
-            <img src="https://livewebbs2.msstatic.com/extension/pic/369f7e68/96d6f2e7e1_1593152638915.png" />
+            <img :src="(item.extLogo || Logo)" />
           </div>
           <div class="ext__body-right">
             <div class="ext__body-title">{{item.extName}}</div>

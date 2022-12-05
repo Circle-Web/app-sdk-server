@@ -112,19 +112,8 @@
   const fileList = ref < UploadUserFile[] > ()
 
   const onFileChange = (file) => {
-    createQiniuUploader(file.raw).then((res) => {
-      res.subscribe({
-        next(res) {
-          console.log(res)
-        },
-        error(err) {
-          console.log(err)
-        },
-        complete(res) {
-          console.log(res)
-          form.extLogo = res.key
-        }
-      })
+    createQiniuUploader(file.raw).then((fileUrl) => {
+      form.extLogo = fileUrl
     })
   }
 
