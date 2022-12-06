@@ -10,14 +10,14 @@ export class SignRecordDO {
     @Column({
         name: 'ServerId',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '社区id',
     })
     serverId: string
     @Column({
         name: 'Username',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '社区唯一账号',
     })
     username: string

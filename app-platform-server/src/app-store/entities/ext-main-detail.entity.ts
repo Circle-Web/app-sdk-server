@@ -10,14 +10,14 @@ export class ExtMainDetailDO {
     @Column({
         name: 'ExtName',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件名称',
     })
     extName: string
     @Column({
         name: 'ExtLogo',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件logo地址url',
         default: ''
     })

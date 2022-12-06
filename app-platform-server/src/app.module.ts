@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config/index';
 import { ImModule } from './im/im.module';
 import { QiNiuModule } from './qiniu/qi-niu.module';
+import { RobotCreatedDO } from './robot-ext/entities/robot-created.entity';
+import { RobotExtModule } from './robot-ext/robot-ext.module';
 import { SignRecordDO } from './sign-ext/entities/sign-record.entity';
 import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
@@ -33,7 +35,7 @@ import { UserModule } from './user/user.module';
       useFactory: (config: ConfigService) => {
         return {
           type: 'mysql',
-          entities: [UserDO, ExtMainDetailDO, ExtVersionDO, ExtInstallDO, SignRecordDO],
+          entities: [UserDO, ExtMainDetailDO, ExtVersionDO, ExtInstallDO, SignRecordDO, RobotCreatedDO],
           keepConnectionAlive: true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;
@@ -46,7 +48,8 @@ import { UserModule } from './user/user.module';
     ExtQueryModule,
     ExtOperateModule,
     SignExtModule,
-    QiNiuModule
+    QiNiuModule,
+    RobotExtModule
   ],
   controllers: [UserController],
   providers: [TagService],

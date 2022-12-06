@@ -14,7 +14,7 @@ export class UserDO {
     @Column({
         name: 'Username',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '用户名',
     })
     username: string;

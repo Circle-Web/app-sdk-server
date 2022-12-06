@@ -1,5 +1,6 @@
 # 开发环境配置
 app:
+  ip: ''
   prefix: '/api'
   port: 3000
   swagger: true

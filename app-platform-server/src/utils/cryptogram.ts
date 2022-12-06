@@ -1,24 +1,28 @@
-import * as crypto from 'crypto';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const CryptoJS = require('crypto-js')
 
-/**
- * Make salt
- */
-export function makeSalt(): string {
-    return crypto.randomBytes(3).toString('base64');
+const KEY = 'cyktqnqweqwe'
+const iv = '1234567890'
+// 加密
+export function encrypt(text: string, key = KEY) {
+    // function encrypt(text, key = KEY) {
+    return CryptoJS.AES.encrypt(text, CryptoJS.enc.Utf8.parse(key), {
+        iv: CryptoJS.enc.Utf8.parse(iv),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    }).toString()
 }
 
-/**
- * Encrypt password
- * @param password 密码
- * @param salt 密码盐
- */
-export function encryptPassword(password: string, salt: string): string {
-    if (!password || !salt) {
-        return '';
-    }
-    const tempSalt = Buffer.from(salt, 'base64');
-    return (
-        // 10000 代表迭代次数 16代表长度
-        crypto.pbkdf2Sync(password, tempSalt, 10000, 16, 'sha1').toString('base64')
-    );
+// 解密
+export function decrypt(text: string, key = KEY) {
+    // function decrypt(text, key = KEY) {
+    const decrypted = CryptoJS.AES.decrypt(text, CryptoJS.enc.Utf8.parse(key), {
+        iv: CryptoJS.enc.Utf8.parse(iv),
+        mode: CryptoJS.mode.CBC,
+        padding: CryptoJS.pad.Pkcs7
+    })
+    return decrypted.toString(CryptoJS.enc.Utf8)
 }
+// const e = encrypt('tqn_1670343243375')
+// console.log(e)
+// console.log(decrypt(e))

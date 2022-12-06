@@ -15,14 +15,14 @@ export class ExtVersionDO {
     @Column({
         name: 'ExtName',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件名称',
     })
     extName: string
     @Column({
         name: 'ExtMainUrl',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件入口网络地址',
         default: '',
     })
@@ -30,7 +30,7 @@ export class ExtVersionDO {
     @Column({
         name: 'ExtLogo',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件logo地址url',
         default: '',
     })
@@ -38,7 +38,7 @@ export class ExtVersionDO {
     @Column({
         name: 'ExtBrief',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件简要的介绍信息',
         default: '',
     })
@@ -54,7 +54,7 @@ export class ExtVersionDO {
     @Column({
         name: 'ExtMarketSnapshots',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件快照图片url列表，#号隔开',
         default: '',
     })
@@ -62,7 +62,7 @@ export class ExtVersionDO {
     @Column({
         name: 'Keywords',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '关键词，#号隔开',
         default: '',
     })

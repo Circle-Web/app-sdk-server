@@ -1,23 +1,33 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom, map } from 'rxjs';
+import { RobotCreatedDO } from 'src/robot-ext/entities/robot-created.entity';
+import { decrypt } from 'src/utils/cryptogram';
+import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
+import { Repository } from 'typeorm';
 import IMUser from './data/IMUser';
+import { ImMsg } from './dto/im-msg.dto';
 
 @Injectable()
 export class ImService {
+
     private readonly logger = new Logger(ImService.name);
     private manager = new IMUser()
 
     constructor(private readonly httpService: HttpService,
-        private readonly configService: ConfigService) {
+        private readonly configService: ConfigService,
+        @InjectRepository(RobotCreatedDO)
+        private readonly dao: Repository<RobotCreatedDO>
+    ) {
         // test
-        // this.getToken().then(res => this.logger.debug(`${res.getValue()}`))
+        this.getToken().then(res => this.logger.debug(`创建token：${res.getValue()}`))
     }
 
-    private async getToken() {
+    private async getToken(): Promise<Result<any>> {
         if (new Date().getTime() > this.manager.createTime + this.manager.expires_in) {
             this.logger.debug(`环信token已过期，重新生成一个`)
 
@@ -29,18 +39,20 @@ export class ImService {
                 ttl: this.configService.get('im.ttl')
             }, { headers: { 'Content-Type': 'application/json' } })
                 .pipe(map((res) => {
-                    this.logger.debug(res.statusText)
                     return res.data
                 }))
-            const data = await lastValueFrom(observable)
-            if (data) {
+
+            return lastValueFrom(observable).then((data) => {
                 this.manager.createTime = new Date().getTime()
                 this.manager.access_token = data.access_token
                 this.manager.application = data.application
                 this.manager.expires_in = data.expires_in
-            } else {
-                return ResultFactory.create(ResultCode.IM_REQUEST_FAIL)
-            }
+
+                this.logger.debug(data.access_token)
+                return ResultFactory.success(this.manager.access_token)
+            }).catch(err => {
+                return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+            })
         }
 
         return ResultFactory.success(this.manager.access_token)
@@ -51,19 +63,172 @@ export class ImService {
         if (res.error()) {
             return res;
         }
-        const path = `/server/${server_id}/user/role?userId=${user_id}`
-        const observable = this.httpService.get(path, {
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${res.getValue()}`
-            }
+        const url = `${this.configService.get('im.base_url')}/server/${server_id}/user/role?userId=${user_id}`
+        const observable = this.httpService.get(url, {
+            headers: this.getHeardes(res.getValue())
         }).pipe(map((res) => {
             return res.data
         }))
-        const data = await lastValueFrom(observable)
-        if (data && data.code === 200) {
+        return lastValueFrom(observable).then((data) => {
             return ResultFactory.success(data.role)
-        }
-        return ResultFactory.create(ResultCode.IM_REQUEST_FAIL)
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
     }
+
+    private getHeardes(token: string, contentType = 'application/json') {
+        return {
+            'Content-Type': contentType,
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    }
+
+    public async webhookSendMsg(key: string, dto: ImMsg) {
+        const res = await this.getToken()
+        if (res.error()) {
+            return res
+        }
+        // 发送消息
+        const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
+        // 解密key，拿到username
+        this.logger.warn(key === 'o5LpjaB8D/Kbwh6XcKhquBwEUM/ZYhR9rs6fNlV0tAk=')
+        const robotUsername = decrypt(key)
+        const data = await this.dao.findOne({ where: { userId: dto.from, robotUsername: robotUsername } })
+        if (!data) {
+            return ResultFactory.create(ResultCode.IM_ROBOT_WEB_HOOK_FAIL)
+        }
+        const observable = this.httpService.post(url,
+            {
+                from: robotUsername,
+                to: [`${data.channelId}`],
+                ...dto
+            },
+            {
+                headers: this.getHeardes(res.getValue())
+            }).pipe(map((res) => {
+                return res.data
+            }))
+        return lastValueFrom(observable).then(() => {
+            return ResultFactory.success()
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
+    }
+
+    async createRobot(username: string, robotName: string): Promise<Result<string>> {
+        // 先创建一个
+        const robotUsername = `${username}_${+new Date}`
+        return this.regiesterIMUser(robotUsername, robotName)
+    }
+
+    public async regiesterIMUser(username: string, nickname: string): Promise<Result<any>> {
+        const res = await this.getToken()
+        if (res.error()) {
+            return res
+        }
+        // 发送消息
+        const url = `${this.configService.get('im.base_url')}/users`
+        const observable = this.httpService.post(url,
+            {
+                username, password: username, nickname
+            },
+            {
+                headers: this.getHeardes(res.getValue())
+            }).pipe(map((res: any) => {
+                return res.data
+            }))
+        return lastValueFrom(observable).then(() => {
+            return ResultFactory.success(username)
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
+    }
+
+    public async setRobotTag(robotUsername: string) {
+        const res = await this.getToken()
+        if (res.error()) {
+            return res
+        }
+        // 发送消息
+        const url = `${this.configService.get('im.base_url')}/metadata/user/${robotUsername}`
+        const observable = this.httpService.put(url,
+            {
+                robot: true
+            },
+            {
+                headers: this.getHeardes(res.getValue(), 'application/x-www-form-urlencoded')
+            }).pipe(map((res: any) => {
+                this.logger.debug(`设置机器人标识 ${res.data}`)
+                return res.data
+            }))
+        return lastValueFrom(observable).then(() => {
+            return ResultFactory.success()
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
+    }
+
+    public async addRobotToServer(robotUsername: string, serverId: string, channelId: string): Promise<Result<{ serverName: string, channelName: string }>> {
+        // 加入社区
+        let res: any = await this.addServer(robotUsername, serverId)
+        if (res.error()) {
+            return res
+        }
+        const serverName = res.getValue()
+        // 加入频道
+        res = await this.addChannel(robotUsername, channelId, serverId)
+        if (res.error()) {
+            return res
+        }
+        const channelName = res.getValue()
+        return ResultFactory.success({ serverName, channelName })
+    }
+
+    public async addServer(username: string, serverId: string) {
+        const res = await this.getToken()
+        if (res.error()) {
+            return res
+        }
+        // 发送消息
+        const url = `${this.configService.get('im.base_url')}/circle/server/${serverId}/join?userId=${username}`
+        this.logger.debug(url)
+        const observable = this.httpService.post(url,
+            {},
+            {
+                headers: this.getHeardes(res.getValue())
+            }).pipe(map((res) => {
+                return res
+            }))
+        return lastValueFrom(observable).then((res) => {
+            this.logger.debug(`已加入社区 ${res.data.server.name}`)
+            return ResultFactory.success(res.data.server.name)
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
+    }
+
+    public async addChannel(username: string, channelId: string, serverId: string) {
+        const res = await this.getToken()
+        if (res.error()) {
+            return res
+        }
+        // 发送消息
+        const url = `${this.configService.get('im.base_url')}/circle/channel/${channelId}/join?userId=${username}&serverId=${serverId}`
+        this.logger.debug(url)
+        const observable = this.httpService.post(url,
+            {},
+            {
+                headers: this.getHeardes(res.getValue())
+            }).pipe(map((res) => {
+                return res
+            }))
+        return lastValueFrom(observable).then((res) => {
+            this.logger.debug(`已加入频道 ${res.data.channel.name}`)
+            return ResultFactory.success(res.data.channel.name)
+        }).catch(err => {
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
+        })
+    }
+
 }

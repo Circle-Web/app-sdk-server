@@ -10,21 +10,21 @@ export class ExtInstallDO {
     @Column({
         name: 'ServerId',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '社区id',
     })
     serverId: string
     @Column({
         name: 'ExtUuid',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件唯一id'
     })
     extUuid: number
     @Column({
         name: 'UserId',
         type: 'varchar',
-        width: 255,
+        length: 255,
         comment: '插件被安装的用户id',
     })
     userId: string
