@@ -29,6 +29,7 @@ export const enum ResultCode {
   VOTE_EXT_CAN_NOT_MULTIPLE_CHOICE = 5012,
   VOTE_EXT_FINISHED = 5013,
   VOTE_EXT_NOT_CREATEED_BY_USER = 5014,
+  VOTE_EXT_SELECTED = 5015,
 }
 
 export const codeMap: Record<ResultCode, string> = {
@@ -62,4 +63,5 @@ export const codeMap: Record<ResultCode, string> = {
   [ResultCode.VOTE_EXT_CAN_NOT_MULTIPLE_CHOICE]: '选择失败：该投票不支持多选',
   [ResultCode.VOTE_EXT_FINISHED]: '操作失败：该投票已完成',
   [ResultCode.VOTE_EXT_NOT_CREATEED_BY_USER]: '操作失败：该投票不是您创建的',
+  [ResultCode.VOTE_EXT_SELECTED]: '操作失败：您已投票',
 };

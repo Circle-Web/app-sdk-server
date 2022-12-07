@@ -26,17 +26,21 @@ export class VoteExtService {
     }
     let record = this.voteRecordDao.create({ title, optionStr: JSON.stringify(options), multipleChoice, publicResult, userId })
     record = await this.voteRecordDao.save(record)
-    return ResultFactory.success(record)
+    return ResultFactory.success({ record: new VoteRecordVO(record) })
   }
 
-  async getMainRecord(id: number) {
+  async getMainRecord(id: number, userId: string) {
     const mainRecord = await this.voteRecordDao.findOne({ where: { id } })
     if (!mainRecord) {
       return ResultFactory.create(ResultCode.VOTE_EXT_NOT_EXIST)
     }
     const list = await this.voteSelectRecordDao.find({ where: { id } })
 
-    return ResultFactory.success({ mainRecord: new VoteRecordVO(mainRecord), list: list.map(l => new VoteSelectRecordVO(l)) })
+    return ResultFactory.success({
+      mainRecord: new VoteRecordVO(mainRecord),
+      list: list.map(l => new VoteSelectRecordVO(l)),
+      selected: list.filter(l => l.userId === userId) !== null
+    })
   }
 
   async getHistoryRecord(userId: string) {
@@ -67,10 +71,14 @@ export class VoteExtService {
     const options: string[] = JSON.parse(mainRecord.optionStr)
     for (const index of select) {
       if (!options[index]) {
-        return ResultFactory.create(ResultCode.VOTE_EXT_NOT_EXIST)
+        return ResultFactory.create(ResultCode.PARAM_ERROR)
       }
     }
-    const selectRecord = this.voteSelectRecordDao.create({ id, selectStr: JSON.stringify(select), userId })
+    let selectRecord = await this.voteSelectRecordDao.findOne({ where: { id, userId } })
+    if (selectRecord) {
+      return ResultFactory.create(ResultCode.VOTE_EXT_SELECTED)
+    }
+    selectRecord = this.voteSelectRecordDao.create({ id, selectStr: JSON.stringify(select), userId })
     await this.voteSelectRecordDao.save(selectRecord)
     return ResultFactory.success()
   }
