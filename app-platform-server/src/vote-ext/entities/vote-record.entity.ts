@@ -45,6 +45,7 @@ export class VoteRecordDO extends BaseEntity {
         name: 'Finish',
         type: 'bool',
         comment: '是否结束了',
+        default: false
     })
     finish: boolean
 }
