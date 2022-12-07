@@ -39,7 +39,7 @@ export class VoteExtService {
     return ResultFactory.success({
       mainRecord: new VoteRecordVO(mainRecord),
       list: list.map(l => new VoteSelectRecordVO(l)),
-      selected: list.filter(l => l.userId === userId).length > 0
+      selected: list.filter(l => l.userId === userId) !== null
     })
   }
 
