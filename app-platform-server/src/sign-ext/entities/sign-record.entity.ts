@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm"
+import { BaseEntity } from "src/common/entities/baseEntity"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('sign_record')
-export class SignRecordDO {
+export class SignRecordDO extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'Id',
         comment: '自增id',
@@ -21,11 +22,4 @@ export class SignRecordDO {
         comment: '社区唯一账号',
     })
     username: string
-    @CreateDateColumn({
-        name: 'CreateTime',
-        type: 'datetime',
-        comment: '签到时间',
-    })
-    createTime: Date
-
 }

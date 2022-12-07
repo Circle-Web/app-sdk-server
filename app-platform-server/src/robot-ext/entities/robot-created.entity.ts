@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity } from "typeorm"
-
+import { BaseEntity } from "src/common/entities/baseEntity"
+import { Column, Entity } from "typeorm"
 @Entity('robot_created')
-export class RobotCreatedDO {
+export class RobotCreatedDO extends BaseEntity {
     @Column({
         name: 'UserId',
         type: 'varchar',
@@ -53,10 +53,4 @@ export class RobotCreatedDO {
         comment: 'webhook地址',
     })
     webhook: string
-    @CreateDateColumn({
-        name: 'CreatedTime',
-        type: 'datetime',
-        comment: '添加时间',
-    })
-    createdTime: Date
 }

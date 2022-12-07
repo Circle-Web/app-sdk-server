@@ -1,10 +1,10 @@
+import { BaseEntity } from 'src/common/entities/baseEntity';
 import {
-    Column, CreateDateColumn, Entity, PrimaryGeneratedColumn,
-    UpdateDateColumn
+    Column, Entity, PrimaryGeneratedColumn
 } from 'typeorm';
 
 @Entity('user')
-export class UserDO {
+export class UserDO extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'Id',
         comment: '用户id',
@@ -43,18 +43,4 @@ export class UserDO {
         default: 1,
     })
     roleId: number;
-
-    @CreateDateColumn({
-        name: 'CreatedTime',
-        type: 'datetime',
-        comment: '添加时间',
-    })
-    createdTime: Date;
-
-    @UpdateDateColumn({
-        name: 'UpdatedTime',
-        type: 'datetime',
-        comment: '更新时间',
-    })
-    updatedTime: Date;
 }

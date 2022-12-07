@@ -2,23 +2,19 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { AppStoreModule } from './app-store/app-store.module';
-import { ExtInstallDO } from './app-store/entities/ext-install.entity';
-import { ExtMainDetailDO } from './app-store/entities/ext-main-detail.entity';
-import { ExtVersionDO } from './app-store/entities/ext-version.entity';
 import { ExtOperateModule } from './app-store/ext-operate/ext-operate.module';
 import { ExtQueryModule } from './app-store/ext-query/ext-query.module';
 import { AuthModule } from './auth/auth.module';
 import configuration from './config/index';
 import { ImModule } from './im/im.module';
 import { QiNiuModule } from './qiniu/qi-niu.module';
-import { RobotCreatedDO } from './robot-ext/entities/robot-created.entity';
 import { RobotExtModule } from './robot-ext/robot-ext.module';
-import { SignRecordDO } from './sign-ext/entities/sign-record.entity';
 import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
-import { UserDO } from './user/entities/user.entity';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require("path")
 
 @Module({
   imports: [
@@ -35,7 +31,7 @@ import { UserModule } from './user/user.module';
       useFactory: (config: ConfigService) => {
         return {
           type: 'mysql',
-          entities: [UserDO, ExtMainDetailDO, ExtVersionDO, ExtInstallDO, SignRecordDO, RobotCreatedDO],
+          entities: [path.join(__dirname, './**/*.entity{.ts,.js}')],
           keepConnectionAlive: true,
           ...config.get('db.mysql'),
         } as TypeOrmModuleOptions;

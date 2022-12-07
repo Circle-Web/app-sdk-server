@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { BaseEntity } from "src/common/entities/baseEntity"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('ext_version')
-export class ExtVersionDO {
+export class ExtVersionDO extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'ExtVersionId',
         comment: '版本信息唯一id',
@@ -92,16 +93,4 @@ export class ExtVersionDO {
         default: '0'
     })
     extVersionOnline: number
-    @CreateDateColumn({
-        name: 'CreatedTime',
-        type: 'datetime',
-        comment: '添加时间',
-    })
-    createTime: Date
-    @UpdateDateColumn({
-        name: 'UpdatedTime',
-        type: 'datetime',
-        comment: '更新时间',
-    })
-    updateTime: Date
 }

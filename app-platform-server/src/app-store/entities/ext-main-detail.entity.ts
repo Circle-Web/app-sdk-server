@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { BaseEntity } from "src/common/entities/baseEntity"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('ext_main_detail')
-export class ExtMainDetailDO {
+export class ExtMainDetailDO extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'ExtUuid',
         comment: '插件唯一id',
@@ -33,16 +34,4 @@ export class ExtMainDetailDO {
         default: 0
     })
     extStatus: number
-    @CreateDateColumn({
-        name: 'CreatedTime',
-        type: 'datetime',
-        comment: '添加时间',
-    })
-    createTime: Date
-    @UpdateDateColumn({
-        name: 'UpdatedTime',
-        type: 'datetime',
-        comment: '更新时间',
-    })
-    updateTime: Date
 }

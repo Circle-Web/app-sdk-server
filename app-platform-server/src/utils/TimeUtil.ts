@@ -12,7 +12,7 @@ export default class TimeUtil {
   public static MAX_DATE = new Date(new Date().setFullYear(2099, 1, 1))
 
   public static isTodayDate(date: Date) {
-    return this.getDiffDayWithH0(date, new Date()) == 0
+    return this.getDiffDayWithH0(new Date(date), new Date()) == 0
   }
 
   public static isSameDate(dateA: Date, dateB: Date) {

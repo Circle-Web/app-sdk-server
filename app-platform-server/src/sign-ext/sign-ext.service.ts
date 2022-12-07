@@ -52,11 +52,11 @@ export class SignExtService {
     const signTime = _ownRecordList?.[_ownRecordList.length - 1]?.createTime ?? TimeUtil.MAX_DATE
     const ownRecordList = []
     for (const iterator of _ownRecordList) {
-      ownRecordList.push({ createTime: iterator.createTime.getTime() })
+      ownRecordList.push({ createTime: iterator.createTime })
     }
     return ResultFactory.success({
       day: ownRecordList.length,
-      signTime: signTime.getTime(),
+      signTime: signTime,
       person: todaySignPersonList.length,
       ownRecordList,
       signToday: TimeUtil.isTodayDate(signTime),

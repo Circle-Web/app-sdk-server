@@ -1,7 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { BaseEntity } from "src/common/entities/baseEntity"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity('ext_install')
-export class ExtInstallDO {
+export class ExtInstallDO extends BaseEntity {
     @PrimaryGeneratedColumn({
         name: 'Id',
         comment: '唯一id',
@@ -28,16 +29,4 @@ export class ExtInstallDO {
         comment: '插件被安装的用户id',
     })
     userId: string
-    @CreateDateColumn({
-        name: 'CreatedTime',
-        type: 'datetime',
-        comment: '添加时间',
-    })
-    createTime: Date
-    @UpdateDateColumn({
-        name: 'UpdatedTime',
-        type: 'datetime',
-        comment: '更新时间',
-    })
-    updateTime: Date
 }
