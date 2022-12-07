@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom, map } from 'rxjs';
 import { RobotCreatedDO } from 'src/robot-ext/entities/robot-created.entity';
-import { decrypt } from 'src/utils/cryptogram';
 import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
@@ -85,22 +84,19 @@ export class ImService {
     }
 
     public async webhookSendMsg(key: string, dto: ImMsg) {
+        const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
+        // 解密key，拿到username
+        const data = await this.dao.findOne({ where: { id: key, userId: dto.from } })
+        if (!data) {
+            return ResultFactory.create(ResultCode.IM_ROBOT_WEB_HOOK_FAIL)
+        }
         const res = await this.getToken()
         if (res.error()) {
             return res
         }
-        // 发送消息
-        const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
-        // 解密key，拿到username
-        this.logger.warn(key === 'o5LpjaB8D/Kbwh6XcKhquBwEUM/ZYhR9rs6fNlV0tAk=')
-        const robotUsername = decrypt(key)
-        const data = await this.dao.findOne({ where: { userId: dto.from, robotUsername: robotUsername } })
-        if (!data) {
-            return ResultFactory.create(ResultCode.IM_ROBOT_WEB_HOOK_FAIL)
-        }
         const observable = this.httpService.post(url,
             {
-                from: robotUsername,
+                from: data.robotUsername,
                 to: [`${data.channelId}`],
                 ...dto
             },
@@ -109,8 +105,11 @@ export class ImService {
             }).pipe(map((res) => {
                 return res.data
             }))
-        return lastValueFrom(observable).then(() => {
-            return ResultFactory.success()
+        return lastValueFrom(observable).then((data) => {
+            if (Object.keys(data.data).length) {
+                return ResultFactory.success()
+            }
+            return ResultFactory.create(ResultCode.IM_REQUEST_FAIL)
         }).catch(err => {
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })

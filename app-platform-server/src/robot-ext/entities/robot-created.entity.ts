@@ -3,11 +3,18 @@ import { Column, Entity } from "typeorm"
 @Entity('robot_created')
 export class RobotCreatedDO extends BaseEntity {
     @Column({
+        name: 'Id',
+        type: 'varchar',
+        length: 100,
+        comment: '唯一id',
+        primary: true
+    })
+    id: string
+    @Column({
         name: 'UserId',
         type: 'varchar',
         length: 255,
         comment: '机器人被创建的用户id',
-        primary: true
     })
     userId: string
     @Column({
@@ -15,7 +22,6 @@ export class RobotCreatedDO extends BaseEntity {
         type: 'varchar',
         length: 255,
         comment: '机器人账号id',
-        primary: true
     })
     robotUsername: string
     @Column({

@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ImService } from 'src/im/im.service';
-import { encrypt } from 'src/utils/cryptogram';
 import { ResultFactory } from 'src/utils/result/resultFactory';
+import { genId } from 'src/utils/snowflake';
 import { Repository } from 'typeorm';
 import { RobotCreatedDO } from './entities/robot-created.entity';
 @Injectable()
@@ -37,13 +37,10 @@ export class RobotExtService {
       return addRes
     }
     const { serverName, channelName } = addRes.getValue()
-    const key = encrypt(robotUsername)
-    const webhook = `http://${this.configService.get('app.ip')}:${this.configService.get('app.port')}/im/robot/webhook/send?key=${key}`
-    const data = this.dao.create({ userId: username, robotUsername, robotNickname, serverName, channelId, channelName, webhook })
-    await this.dao.save(data)
-    return ResultFactory.success({
-      robotNickname,
-      webhook
-    })
+    const id = genId()
+    const webhook = `http://${this.configService.get('app.ip')}:${this.configService.get('app.port')}/im/robot/webhook/send?key=${id}`
+    const data = this.dao.create({ id, userId: username, robotUsername, robotNickname, serverName, channelId, channelName, webhook })
+    const vo = await this.dao.save(data)
+    return ResultFactory.success(vo)
   }
 }
