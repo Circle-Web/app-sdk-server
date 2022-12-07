@@ -24,6 +24,11 @@ export const enum ResultCode {
   UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR = 1010,
 
   SIGN_EXT_SIGN_FAIL = 5000,
+  VOTE_EXT_NOT_EXIST = 5010,
+  VOTE_EXT_SELECT_ERROR = 5011,
+  VOTE_EXT_CAN_NOT_MULTIPLE_CHOICE = 5012,
+  VOTE_EXT_FINISHED = 5013,
+  VOTE_EXT_NOT_CREATEED_BY_USER = 5014,
 }
 
 export const codeMap: Record<ResultCode, string> = {
@@ -51,4 +56,10 @@ export const codeMap: Record<ResultCode, string> = {
   [ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR]: '回退失败：当前不是审核版本，无法回退测试',
 
   [ResultCode.SIGN_EXT_SIGN_FAIL]: '签到失败：今天已签到！',
+
+  [ResultCode.VOTE_EXT_NOT_EXIST]: '查询失败：该投票不存在',
+  [ResultCode.VOTE_EXT_SELECT_ERROR]: '选择失败：该选项不存在',
+  [ResultCode.VOTE_EXT_CAN_NOT_MULTIPLE_CHOICE]: '选择失败：该投票不支持多选',
+  [ResultCode.VOTE_EXT_FINISHED]: '操作失败：该投票已完成',
+  [ResultCode.VOTE_EXT_NOT_CREATEED_BY_USER]: '操作失败：该投票不是您创建的',
 };

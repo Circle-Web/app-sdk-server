@@ -6,7 +6,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     constructor(
         private readonly options = {
             match: /^\/api/,
-            getMatch: [/^\/api(.*)(\/sign-ext)(\/)/, /^\/api(.*)(\/robot-ext)(\/)/, /^\/api(.*)(\/im)(\/)/],
+            getMatch: [/^\/api(.*)(\/ext)(\/)/, /^\/api(.*)(\/im)(\/)/],
             ignoreApi: ['/user/login', '/user/register', '/appstore/tagList', '/appstore/extList', '/appstore/search', '/appstore/extMainDetail'],
         },
     ) {
@@ -26,19 +26,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
                 res = true
             }
         }
-        // if (requestMethod === 'GET') {
-        //     if (this.options.getMatch.test(requestUrl)) {
-        //         return super.canActivate(context);
-        //     } else {
-        //         return true;
-        //     }
-        // }
-
-        // if (this.options.match.test(requestUrl)) {
-        //     return super.canActivate(context);
-        // } else {
-        //     return true;
-        // }
         return res;
     }
 

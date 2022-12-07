@@ -4,7 +4,6 @@ import {
 
 @Entity()
 export class BaseEntity {
-
     @CreateDateColumn({
         name: 'CreateTime',
         nullable: false,

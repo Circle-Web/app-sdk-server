@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { RobotExtService } from './robot-ext.service';
 
-@Controller('api/robot-ext')
+@Controller('api/ext/robot')
 export class RobotExtController {
   constructor(private readonly robotExtService: RobotExtService) { }
 

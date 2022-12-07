@@ -48,13 +48,14 @@ export class AppStoreService {
     return this.rep.createQueryBuilder()
       .where("tagId = :tagId", { tagId })
       .skip(pageSize * (currentPage - 1))
-      .take(pageSize).getMany().then(data => {
-        return ResultFactory.success(data)
+      .take(pageSize).getMany().then(list => {
+        return ResultFactory.success({ list })
       })
   }
 
   async findExtListResult(key = "", extUuids: number[] = []) {
-    return ResultFactory.success(await this.findExtList(key, extUuids))
+    const list = await this.findExtList(key, extUuids)
+    return ResultFactory.success({ list })
   }
 
   async findExtList(key = "", extUuids: number[] = []) {
@@ -72,7 +73,8 @@ export class AppStoreService {
       where: { serverId }
     })
     const versionList = await this.findExtList("", data.map(d => d.id))
-    return ResultFactory.success(_.unionBy(versionList, 'extUuid'))
+    const list = _.unionBy(versionList, 'extUuid')
+    return ResultFactory.success({ list })
   }
 
   async installExt(serverId: string, userId: string, extUuid: number) {

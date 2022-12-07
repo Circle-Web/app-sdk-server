@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { SignExtService } from './sign-ext.service';
 
-@Controller('api/sign-ext')
+@Controller('api/ext/sign')
 export class SignExtController {
   constructor(private readonly signExtService: SignExtService) { }
 

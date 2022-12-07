@@ -13,6 +13,7 @@ import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { VoteExtModule } from './vote-ext/vote-ext.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path")
 
@@ -45,7 +46,8 @@ const path = require("path")
     ExtOperateModule,
     SignExtModule,
     QiNiuModule,
-    RobotExtModule
+    RobotExtModule,
+    VoteExtModule
   ],
   controllers: [UserController],
   providers: [TagService],

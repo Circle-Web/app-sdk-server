@@ -17,8 +17,8 @@ export class RobotExtService {
   ) { }
 
   async getListRobots(userId: string) {
-    const data = await this.dao.find({ where: { userId } })
-    return ResultFactory.success(data)
+    const list = await this.dao.find({ where: { userId } })
+    return ResultFactory.success({ list })
   }
 
   async create(username: string, serverId: string, channelId: string, robotNickname: string) {
