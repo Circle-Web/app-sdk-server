@@ -47,7 +47,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
         extMainDetail.extStatus = ExtStatus.ONLINE
-        this.rep.update(extUuid, extMainDetail)
+        await this.rep.save(extMainDetail)
         return ResultFactory.success()
     }
 
@@ -57,7 +57,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
         extMainDetail.extStatus = ExtStatus.OFFLINE
-        this.rep.update(extUuid, extMainDetail)
+        await this.rep.save(extMainDetail)
         return ResultFactory.success()
     }
 
@@ -96,22 +96,22 @@ export class ExtOperateService {
 
     async updateVersion(extAuthorId: number, dto: UpdateExtDto) {
         const extVersionId = dto.extVersionId
-        const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
-        if (!versionDO) {
+        const version = await this.versionRep.findOne({ where: { extVersionId } })
+        if (!version) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
-        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        const extMainDetail = await this.rep.findOne({ where: { extUuid: version.extUuid, extAuthorId } })
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
-        versionDO.extMainUrl = dto.extMainUrl ?? ""
-        versionDO.extBrief = dto.extBrief ?? ""
-        versionDO.extDescription = dto.extDescription ?? ""
-        versionDO.extLogo = dto.extLogo
-        versionDO.extMarketSnapshots = dto.extMarketSnapshots?.join("#") ?? ""
-        versionDO.extName = dto.extName
-        await this.versionRep.update(extVersionId, versionDO)
-        return ResultFactory.success(versionDO)
+        version.extMainUrl = dto.extMainUrl ?? ""
+        version.extBrief = dto.extBrief ?? ""
+        version.extDescription = dto.extDescription ?? ""
+        version.extLogo = dto.extLogo
+        version.extMarketSnapshots = dto.extMarketSnapshots?.join("#") ?? ""
+        version.extName = dto.extName
+        await this.versionRep.save(version)
+        return ResultFactory.success({ version })
     }
 
     async versionCommitTest(extAuthorId: number, extVersionId: number) {
@@ -127,7 +127,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_ERROR)
         }
         versionDO.extVersionType = ExtVersionType.TEST
-        this.versionRep.update(extVersionId, versionDO)
+        await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 
@@ -144,7 +144,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_DEV_ERROR)
         }
         versionDO.extVersionType = ExtVersionType.DEV
-        this.versionRep.update(extVersionId, versionDO)
+        await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 
@@ -161,7 +161,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_AUDIT_ERROR)
         }
         versionDO.extVersionAudit = ExtVersionAudit.AUDITTING
-        this.versionRep.update(extVersionId, versionDO)
+        this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 
@@ -178,7 +178,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_TEST_ERROR)
         }
         versionDO.extVersionAudit = ExtVersionAudit.NOT_AUDIT
-        this.versionRep.update(extVersionId, versionDO)
+        await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 
@@ -196,7 +196,7 @@ export class ExtOperateService {
         }
         versionDO.extVersionType = ExtVersionType.ONLINE
         versionDO.extVersionOnline = ExtVersionOnline.ONLINE
-        this.versionRep.update(extVersionId, versionDO)
+        await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 
@@ -214,7 +214,7 @@ export class ExtOperateService {
         }
         versionDO.extVersionType = ExtVersionType.TEST
         versionDO.extVersionOnline = ExtVersionOnline.OFFLINE
-        this.versionRep.update(extVersionId, versionDO)
+        await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
 }

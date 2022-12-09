@@ -14,4 +14,10 @@ export class RobotExtController {
   create(@Body() { username, serverId, channelId, robotName }) {
     return this.robotExtService.create(username, serverId, channelId, robotName)
   }
+
+  @Post('resetKey')
+  resetKey(@Body() { id, username }) {
+    return this.robotExtService.resetKey(id, username)
+  }
+
 }

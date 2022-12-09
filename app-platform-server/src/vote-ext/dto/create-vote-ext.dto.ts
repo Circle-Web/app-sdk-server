@@ -4,4 +4,5 @@ export class CreateVoteExtDto {
     multipleChoice: boolean
     publicResult: boolean
     userId: string
+    channelId: string
 }

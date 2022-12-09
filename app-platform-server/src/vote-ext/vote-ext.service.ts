@@ -20,11 +20,11 @@ export class VoteExtService {
   ) { }
 
   async create(createVoteExtDto: CreateVoteExtDto) {
-    const { title, options, multipleChoice, publicResult, userId } = createVoteExtDto
+    const { title, options, multipleChoice, publicResult, userId, channelId } = createVoteExtDto
     if (!options.length) {
       return ResultFactory.create(ResultCode.PARAM_ERROR)
     }
-    let record = this.voteRecordDao.create({ title, optionStr: JSON.stringify(options), multipleChoice, publicResult, userId })
+    let record = this.voteRecordDao.create({ title, optionStr: JSON.stringify(options), multipleChoice, publicResult, userId, channelId })
     record = await this.voteRecordDao.save(record)
     return ResultFactory.success({ record: new VoteRecordVO(record) })
   }
@@ -43,14 +43,9 @@ export class VoteExtService {
     })
   }
 
-  async getHistoryRecord(userId: string) {
-    const mainRecordList = await this.voteRecordDao.find({ where: { userId } })
-    const totalList = []
-    for (const iterator of mainRecordList) {
-      const list = await this.voteSelectRecordDao.find({ where: { id: iterator.id } })
-      totalList.push({ mainRecord: iterator, list })
-    }
-    return ResultFactory.success({ list: totalList })
+  async getHistoryRecord(userId: string, channelId: string) {
+    const mainRecordList = await this.voteRecordDao.find({ where: { userId, channelId } })
+    return ResultFactory.success({ list: mainRecordList })
   }
 
   async select(id: number, select: number[], userId: string) {
@@ -95,7 +90,7 @@ export class VoteExtService {
       return ResultFactory.create(ResultCode.VOTE_EXT_FINISHED)
     }
     mainRecord.finish = true
-    await this.voteRecordDao.update(id, mainRecord)
+    await this.voteRecordDao.save(mainRecord)
     return ResultFactory.success()
   }
 

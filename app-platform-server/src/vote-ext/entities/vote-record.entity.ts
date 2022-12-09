@@ -48,4 +48,11 @@ export class VoteRecordDO extends BaseEntity {
         default: false
     })
     finish: boolean
+    @Column({
+        name: 'ChannelId',
+        type: 'varchar',
+        length: 255,
+        comment: '频道Id',
+    })
+    channelId: string
 }

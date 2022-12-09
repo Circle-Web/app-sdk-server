@@ -1,15 +1,12 @@
 import { BaseEntity } from "src/common/entities/baseEntity"
-import { Column, Entity } from "typeorm"
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm"
 @Entity('robot_created')
 export class RobotCreatedDO extends BaseEntity {
-    @Column({
+    @PrimaryGeneratedColumn({
         name: 'Id',
-        type: 'varchar',
-        length: 100,
         comment: '唯一id',
-        primary: true
     })
-    id: string
+    id: number
     @Column({
         name: 'UserId',
         type: 'varchar',
@@ -53,10 +50,10 @@ export class RobotCreatedDO extends BaseEntity {
     })
     channelName: string
     @Column({
-        name: 'Webhook',
+        name: 'Key',
         type: 'varchar',
-        length: 500,
-        comment: 'webhook地址',
+        length: 100,
+        comment: 'webhook地址的key码',
     })
-    webhook: string
+    key: string
 }

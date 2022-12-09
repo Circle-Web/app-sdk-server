@@ -86,7 +86,7 @@ export class ImService {
     public async webhookSendMsg(key: string, dto: ImMsg) {
         const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
         // 解密key，拿到username
-        const data = await this.dao.findOne({ where: { id: key, userId: dto.from } })
+        const data = await this.dao.findOne({ where: { key } })
         if (!data) {
             return ResultFactory.create(ResultCode.IM_ROBOT_WEB_HOOK_FAIL)
         }

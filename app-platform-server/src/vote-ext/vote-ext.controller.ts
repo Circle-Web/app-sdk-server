@@ -20,8 +20,8 @@ export class VoteExtController {
 
   // 获取历史投票记录
   @Get('historyRecord')
-  historyRecord(@Query() { userId }) {
-    return this.voteExtService.getHistoryRecord(userId);
+  historyRecord(@Query() { userId, channelId }) {
+    return this.voteExtService.getHistoryRecord(userId, channelId);
   }
 
   // 选择投票
