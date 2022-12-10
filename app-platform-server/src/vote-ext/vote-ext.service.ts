@@ -45,7 +45,7 @@ export class VoteExtService {
 
   async getHistoryRecord(userId: string, channelId: string) {
     const mainRecordList = await this.voteRecordDao.find({ where: { userId, channelId } })
-    return ResultFactory.success({ list: mainRecordList })
+    return ResultFactory.success({ list: mainRecordList.map(o => new VoteRecordVO(o)) })
   }
 
   async select(id: number, select: number[], userId: string) {
