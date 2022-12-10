@@ -29,13 +29,13 @@ export class RobotExtService {
   }
 
   async create(username: string, serverId: string, channelId: string, robotNickname: string) {
-    const res = await this.imService.createRobot(username, robotNickname)
+    const res = await this.imService.createRobot(username, robotNickname, serverId)
     if (res.error()) {
       return res
     }
     const robotUsername = res.getValue()
     // 设置机器人标识
-    const setRes = await this.imService.setRobotTag(robotUsername)
+    const setRes = await this.imService.setRobotTag(robotUsername, robotNickname)
     if (setRes.error()) {
       return setRes
     }

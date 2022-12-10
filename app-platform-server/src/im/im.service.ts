@@ -9,6 +9,7 @@ import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
 import IMUser from './data/IMUser';
+import { IMRole } from './data/role';
 import { ImMsg } from './dto/im-msg.dto';
 
 @Injectable()
@@ -57,12 +58,12 @@ export class ImService {
         return ResultFactory.success(this.manager.access_token)
     }
 
-    public async getRole(server_id: number, user_id: number) {
+    public async getRole(serverId: string, userId: string) {
         const res = await this.getToken()
         if (res.error()) {
             return res;
         }
-        const url = `${this.configService.get('im.base_url')}/server/${server_id}/user/role?userId=${user_id}`
+        const url = `${this.configService.get('im.base_url')}/circle/server/${serverId}/user/role?userId=${userId}`
         const observable = this.httpService.get(url, {
             headers: this.getHeardes(res.getValue())
         }).pipe(map((res) => {
@@ -115,7 +116,15 @@ export class ImService {
         })
     }
 
-    async createRobot(username: string, robotName: string): Promise<Result<string>> {
+    async createRobot(username: string, robotName: string, serverId: string): Promise<Result<string>> {
+        // 判断是否有权限
+        const res = await this.getRole(serverId, username)
+        if (res.error()) {
+            return res
+        }
+        if (res.getValue() === IMRole.社区的普通成员) {
+            return ResultFactory.create(ResultCode.IM_ROBOT_CREATE_ROLE_ERROR)
+        }
         // 先创建一个
         const robotUsername = `${username}_${+new Date}`
         return this.regiesterIMUser(robotUsername, robotName)
@@ -144,7 +153,7 @@ export class ImService {
         })
     }
 
-    public async setRobotTag(robotUsername: string) {
+    public async setRobotTag(robotUsername: string, nickname: string) {
         const res = await this.getToken()
         if (res.error()) {
             return res
@@ -153,6 +162,7 @@ export class ImService {
         const url = `${this.configService.get('im.base_url')}/metadata/user/${robotUsername}`
         const observable = this.httpService.put(url,
             {
+                nickname,
                 robot: true
             },
             {
