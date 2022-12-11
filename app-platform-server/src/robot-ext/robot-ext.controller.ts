@@ -30,7 +30,7 @@ export class RobotExtController {
 
   @Get('robotDetail')
   robotDetail(@Query() { id, username }) {
-    return this.robotExtService.robotDetail(id, username)
+    return this.robotExtService.robotDetail(parseInt(id), username)
   }
 
 }

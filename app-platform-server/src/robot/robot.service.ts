@@ -42,7 +42,7 @@ export class RobotService {
           const msg = new ImMsg()
           msg.from = internalRobot.robotUsername
           msg.to = [`${channelId}`]
-          msg.body.msg = desc
+          msg.body.msg = "desc"
           this.imService.internalRobotSendMsg(msg)
         })
         break;

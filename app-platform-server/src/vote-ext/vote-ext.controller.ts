@@ -15,7 +15,7 @@ export class VoteExtController {
   // 查看投票详情
   @Get('mainRecord')
   mainRecord(@Query() { id, userId }) {
-    return this.voteExtService.getMainRecord(id, userId);
+    return this.voteExtService.getMainRecord(parseInt(id), userId);
   }
 
   // 获取历史投票记录
