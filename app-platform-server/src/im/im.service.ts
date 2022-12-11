@@ -249,6 +249,6 @@ export class ImService {
     }
 
     public createWebhook(key: string) {
-        return `http://${this.configService.get('app.ip')}:${this.configService.get('app.port')}/im/robot/webhook/send?key=${key}`
+        return `http://${this.configService.get('app.ip')}:${this.configService.get('app.port')}/api/im/robot/webhook/send?key=${key}`
     }
 }

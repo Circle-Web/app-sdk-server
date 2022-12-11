@@ -62,3 +62,8 @@ qiniu:
   secretKey: ''
   bucket: ''
   url: ''
+
+# 天气api
+weather:
+  url: ''
+  key: ''
