@@ -205,11 +205,13 @@ export class ImService {
         if (res.error()) {
             return res
         }
-        const serverName = res.getValue()
+        const serverName = res.getValue().name
         // 加入频道
-        res = await this.addChannel(robotUsername, channelId, serverId)
-        if (res.error()) {
-            return res
+        if (res.getValue().default_channel_id !== channelId) {
+            res = await this.addChannel(robotUsername, channelId, serverId)
+            if (res.error()) {
+                return res
+            }
         }
         const channelName = res.getValue()
         return ResultFactory.success({ serverName, channelName })
@@ -232,7 +234,7 @@ export class ImService {
             }))
         return lastValueFrom(observable).then((res) => {
             this.logger.debug(`已加入社区 ${res.data.server.name}`)
-            return ResultFactory.success(res.data.server.name)
+            return ResultFactory.success(res.data.server)
         }).catch(err => {
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })

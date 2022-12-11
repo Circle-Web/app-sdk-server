@@ -23,10 +23,11 @@ export class RobotService {
   ) { }
 
   async chatKeywordTrigger(dto: KeywordTriggerDto) {
-    const { type, keyword, fromNickName, serverId, channelId } = dto
-    if (type in KeywordType === false) {
+    const { keyword, fromNickName, serverId, channelId } = dto
+    if (!keyword.includes("#天气查询：")) {
       return ResultFactory.success()
     }
+    const type = KeywordType.天气
     let internalRobot = await this.dao.findOne({ where: { serverId, channelId } })
     if (!internalRobot) {
       const res = await this.tryCreateInternalRobot(serverId, channelId)
