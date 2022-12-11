@@ -29,8 +29,8 @@ export class RobotExtService {
   }
 
   async saveRobot(userId: string, robotBO: RobotBO) {
-    const { robotUsername, robotNickname, channelId, serverName, channelName, key } = robotBO
-    const data = this.dao.create({ userId, robotUsername, robotNickname, serverName, channelId, channelName, key })
+    const { robotUsername, robotNickname, serverId, channelId, serverName, channelName, key } = robotBO
+    const data = this.dao.create({ userId, robotUsername, robotNickname, serverName, serverId, channelId, channelName, key })
     const robotDO = await this.dao.save(data)
 
     const robot = new RobotVO(robotDO)

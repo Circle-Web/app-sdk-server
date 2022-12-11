@@ -29,6 +29,14 @@ export class RobotCreatedDO extends BaseEntity {
     })
     robotNickname: string
     @Column({
+        name: 'ServerId',
+        type: 'varchar',
+        length: 255,
+        comment: '社区Id',
+        primary: true
+    })
+    serverId: string
+    @Column({
         name: 'ServerName',
         type: 'varchar',
         length: 255,

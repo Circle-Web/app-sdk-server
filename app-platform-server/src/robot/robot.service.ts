@@ -26,7 +26,7 @@ export class RobotService {
     if (type in KeywordType === false) {
       return ResultFactory.success()
     }
-    let internalRobot = await this.dao.findOne({ where: { channelId } })
+    let internalRobot = await this.dao.findOne({ where: { serverId, channelId } })
     if (!internalRobot) {
       const res = await this.tryCreateInternalRobot(serverId, channelId)
       if (res.error()) {
@@ -74,7 +74,7 @@ export class RobotService {
       return res
     }
     const { key } = res.getValue()
-    const internalRobot = this.dao.create({ channelId, robotUsername, robotNickname, key })
+    const internalRobot = this.dao.create({ serverId, channelId, robotUsername, robotNickname, key })
     await this.dao.save(internalRobot)
     return ResultFactory.success(internalRobot)
   }
@@ -88,7 +88,7 @@ export class RobotService {
     return this.setAndAdd(serverId, channelId, robotNickname, robotUsername)
   }
 
-  async setAndAdd(serverId: string, channelId: string, robotNickname: string, robotUsername: string): Promise<Result<any>> {
+  private async setAndAdd(serverId: string, channelId: string, robotNickname: string, robotUsername: string): Promise<Result<any>> {
     // 设置机器人标识
     const setRes = await this.imService.setRobotTag(robotUsername, robotNickname)
     if (setRes.error()) {
@@ -100,7 +100,7 @@ export class RobotService {
     }
     const { serverName, channelName } = addRes.getValue()
     const key = genId()
-    const robot = new RobotBO(robotUsername, robotNickname, channelId, serverName, channelName, key)
+    const robot = new RobotBO(robotUsername, robotNickname, serverId, channelId, serverName, channelName, key)
     return ResultFactory.success(robot)
   }
 }
