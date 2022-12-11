@@ -84,22 +84,26 @@ export class ImService {
         }
     }
 
-    public async webhookSendMsg(key: string, dto: ImMsg) {
-        const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
+    public async webhookSendMsg(key: string, imMsg: ImMsg) {
         // 解密key，拿到username
         const data = await this.dao.findOne({ where: { key } })
         if (!data) {
             return ResultFactory.create(ResultCode.IM_ROBOT_WEB_HOOK_FAIL)
         }
+        imMsg.from = data.robotUsername
+        imMsg.to = [`${data.channelId}`]
+        return this.sendMsg(imMsg)
+    }
+
+    private async sendMsg(imMsg: ImMsg) {
+        const url = `${this.configService.get('im.base_url')}/messages/chatgroups`
         const res = await this.getToken()
         if (res.error()) {
             return res
         }
         const observable = this.httpService.post(url,
             {
-                from: data.robotUsername,
-                to: [`${data.channelId}`],
-                ...dto
+                ...imMsg
             },
             {
                 headers: this.getHeardes(res.getValue())
@@ -114,6 +118,10 @@ export class ImService {
         }).catch(err => {
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
+    }
+
+    public async internalRobotSendMsg(imMsg: ImMsg) {
+        return this.sendMsg(imMsg)
     }
 
     async createRobot(username: string, robotName: string, serverId: string): Promise<Result<string>> {
@@ -240,4 +248,7 @@ export class ImService {
         })
     }
 
+    public createWebhook(key: string) {
+        return `http://${this.configService.get('app.ip')}:${this.configService.get('app.port')}/im/robot/webhook/send?key=${key}`
+    }
 }

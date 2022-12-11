@@ -14,6 +14,7 @@ import { TagService } from './tag/tag.service';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 import { VoteExtModule } from './vote-ext/vote-ext.module';
+import { RobotModule } from './robot/robot.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path")
 
@@ -47,7 +48,8 @@ const path = require("path")
     SignExtModule,
     QiNiuModule,
     RobotExtModule,
-    VoteExtModule
+    VoteExtModule,
+    RobotModule
   ],
   controllers: [UserController],
   providers: [TagService],
