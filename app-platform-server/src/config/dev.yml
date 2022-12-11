@@ -63,7 +63,7 @@ qiniu:
   bucket: ''
   url: ''
 
-# 天气api
+# 和风天气 https://dev.qweather.com/docs/api/weather/weather-now/
 weather:
   url: ''
   key: ''

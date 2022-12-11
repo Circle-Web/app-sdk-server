@@ -22,14 +22,13 @@ export class RobotService {
   ) { }
 
   async chatKeywordTrigger(dto: KeywordTriggerDto) {
-    const { type, keyword, channelId } = dto
-    KeywordType
+    const { type, keyword, fromNickName, serverId, channelId } = dto
     if (type in KeywordType === false) {
       return ResultFactory.success()
     }
     let internalRobot = await this.dao.findOne({ where: { channelId } })
     if (!internalRobot) {
-      const res = await this.tryCreateInternalRobot(channelId)
+      const res = await this.tryCreateInternalRobot(serverId, channelId)
       if (res.error()) {
         return res
       }
@@ -38,11 +37,17 @@ export class RobotService {
     switch (type) {
       case KeywordType.天气:
         this.weatherRobotService.search(keyword).then(r => {
+          if (r.error()) {
+            return
+          }
           const desc = r.getValue()
           const msg = new ImMsg()
           msg.from = internalRobot.robotUsername
           msg.to = [`${channelId}`]
-          msg.body.msg = "desc"
+          msg.body = {
+            msg: `@${fromNickName}\n${desc}`
+          }
+          // console.log(msg.body.msg)
           this.imService.internalRobotSendMsg(msg)
         })
         break;
@@ -52,7 +57,7 @@ export class RobotService {
     return ResultFactory.success()
   }
 
-  async tryCreateInternalRobot(channelId: string) {
+  async tryCreateInternalRobot(serverId: string, channelId: string) {
     const robotNickname = "频道专属机器人"
     const username = `${channelId}_${+new Date}`
     let res = await this.imService.regiesterIMUser(username, robotNickname)
@@ -60,7 +65,7 @@ export class RobotService {
       return res
     }
     const robotUsername = res.getValue()
-    res = await this.setAndAdd('', '', channelId, robotNickname, robotUsername)
+    res = await this.setAndAdd(serverId, channelId, robotNickname, robotUsername)
     if (res.error()) {
       return res
     }
@@ -76,10 +81,10 @@ export class RobotService {
       return res
     }
     const robotUsername = res.getValue()
-    return this.setAndAdd(username, serverId, channelId, robotNickname, robotUsername)
+    return this.setAndAdd(serverId, channelId, robotNickname, robotUsername)
   }
 
-  async setAndAdd(username: string, serverId: string, channelId: string, robotNickname: string, robotUsername: string): Promise<Result<any>> {
+  async setAndAdd(serverId: string, channelId: string, robotNickname: string, robotUsername: string): Promise<Result<any>> {
     // 设置机器人标识
     const setRes = await this.imService.setRobotTag(robotUsername, robotNickname)
     if (setRes.error()) {
@@ -91,7 +96,7 @@ export class RobotService {
     }
     const { serverName, channelName } = addRes.getValue()
     const key = genId()
-    const robot = new RobotBO(username, robotUsername, robotNickname, channelId, serverName, channelName, key)
+    const robot = new RobotBO(robotUsername, robotNickname, channelId, serverName, channelName, key)
     return ResultFactory.success(robot)
   }
 }

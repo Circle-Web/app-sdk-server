@@ -1,6 +1,5 @@
 
 export class RobotBO {
-    userId: string
     robotUsername: string
     robotNickname: string
     serverName: string
@@ -8,8 +7,7 @@ export class RobotBO {
     channelName: string
     webhook: string
     key: string
-    constructor(userId: string, robotUsername: string, robotNickname: string, channelId: string, serverName: string, channelName: string, key: string) {
-        this.userId = userId
+    constructor(robotUsername: string, robotNickname: string, channelId: string, serverName: string, channelName: string, key: string) {
         this.robotUsername = robotUsername
         this.robotNickname = robotNickname
         this.serverName = serverName

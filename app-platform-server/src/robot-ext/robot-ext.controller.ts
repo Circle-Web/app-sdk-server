@@ -20,7 +20,7 @@ export class RobotExtController {
     if (res.error()) {
       return res
     }
-    return this.robotExtService.saveRobot(res.getValue())
+    return this.robotExtService.saveRobot(username, res.getValue())
   }
 
   @Post('resetKey')
