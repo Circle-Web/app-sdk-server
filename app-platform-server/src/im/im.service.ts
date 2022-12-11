@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom, map } from 'rxjs';
 import { RobotCreatedDO } from 'src/robot-ext/entities/robot-created.entity';
+import { RobotType } from 'src/robot/data/robotType';
 import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
@@ -97,9 +98,11 @@ export class ImService {
         try {
             ext = imMsg.ext
             ext.nickname = data.robotNickname
+            ext.robot = RobotType.普通
         } catch (err) {
             ext = {}
             ext.nickname = data.robotNickname
+            ext.robot = RobotType.普通
         }
         imMsg.ext = ext
         return this.sendMsg(imMsg)

@@ -52,9 +52,11 @@ export class RobotService {
           try {
             ext = imMsg.ext
             ext.nickname = internalRobot.robotNickname
+            ext.robot = RobotType.专属
           } catch (err) {
             ext = {}
             ext.nickname = internalRobot.robotNickname
+            ext.robot = RobotType.专属
           }
           imMsg.ext = JSON.stringify(ext)
           // console.log(msg.body.msg)
