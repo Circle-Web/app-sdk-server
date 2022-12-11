@@ -8,6 +8,7 @@ import { genId } from 'src/utils/snowflake';
 import { Repository } from 'typeorm';
 import { KeywordType } from './data/keywordType';
 import { RobotBO } from './data/robot.bo';
+import { RobotType } from './data/robotType';
 import { KeywordTriggerDto } from './dto/keyword-trigger.dto';
 import { InternalRobotDO } from './entities/internal-robot.entity';
 import { WeatherRobotService } from './weather-robot/weather-robot.service';
@@ -69,7 +70,7 @@ export class RobotService {
       return res
     }
     const robotUsername = res.getValue()
-    res = await this.setAndAdd(serverId, channelId, robotNickname, robotUsername)
+    res = await this.setAndAdd(serverId, channelId, robotNickname, robotUsername, RobotType.专属)
     if (res.error()) {
       return res
     }
@@ -85,12 +86,12 @@ export class RobotService {
       return res
     }
     const robotUsername = res.getValue()
-    return this.setAndAdd(serverId, channelId, robotNickname, robotUsername)
+    return this.setAndAdd(serverId, channelId, robotNickname, robotUsername, RobotType.普通)
   }
 
-  private async setAndAdd(serverId: string, channelId: string, robotNickname: string, robotUsername: string): Promise<Result<any>> {
+  private async setAndAdd(serverId: string, channelId: string, robotNickname: string, robotUsername: string, robotType: number): Promise<Result<any>> {
     // 设置机器人标识
-    const setRes = await this.imService.setRobotTag(robotUsername, robotNickname)
+    const setRes = await this.imService.setRobotTag(robotUsername, robotNickname, robotType)
     if (setRes.error()) {
       return setRes
     }

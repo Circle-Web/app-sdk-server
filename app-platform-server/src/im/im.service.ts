@@ -165,7 +165,7 @@ export class ImService {
         })
     }
 
-    public async setRobotTag(robotUsername: string, nickname: string) {
+    public async setRobotTag(robotUsername: string, nickname: string, robotType: number) {
         const res = await this.getToken()
         if (res.error()) {
             return res
@@ -175,7 +175,7 @@ export class ImService {
         const observable = this.httpService.put(url,
             {
                 nickname,
-                robot: true
+                robot: robotType
             },
             {
                 headers: this.getHeardes(res.getValue(), 'application/x-www-form-urlencoded')

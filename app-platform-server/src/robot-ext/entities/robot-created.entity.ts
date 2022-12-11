@@ -33,7 +33,6 @@ export class RobotCreatedDO extends BaseEntity {
         type: 'varchar',
         length: 255,
         comment: '社区Id',
-        primary: true
     })
     serverId: string
     @Column({
