@@ -50,11 +50,12 @@ export class RobotService {
           }
           let ext
           try {
-            ext = JSON.parse(imMsg.ext)
+            ext = imMsg.ext
+            ext.nickname = internalRobot.robotNickname
           } catch (err) {
             ext = {}
+            ext.nickname = internalRobot.robotNickname
           }
-          ext.nickname = internalRobot.robotNickname
           imMsg.ext = JSON.stringify(ext)
           // console.log(msg.body.msg)
           this.imService.internalRobotSendMsg(imMsg)

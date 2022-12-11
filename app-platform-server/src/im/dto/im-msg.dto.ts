@@ -7,5 +7,5 @@ export class ImMsg {
     }
     customEvent: string
     customExts?: any
-    ext?: string
+    ext?: any
 }

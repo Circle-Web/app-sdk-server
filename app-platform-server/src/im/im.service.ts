@@ -95,12 +95,13 @@ export class ImService {
 
         let ext
         try {
-            ext = JSON.parse(imMsg.ext)
+            ext = imMsg.ext
+            ext.nickname = data.robotNickname
         } catch (err) {
             ext = {}
+            ext.nickname = data.robotNickname
         }
-        ext.nickname = data.robotNickname
-        imMsg.ext = JSON.stringify(ext)
+        imMsg.ext = ext
         return this.sendMsg(imMsg)
     }
 
