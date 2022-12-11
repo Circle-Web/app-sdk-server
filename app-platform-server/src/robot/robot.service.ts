@@ -48,7 +48,12 @@ export class RobotService {
           imMsg.body = {
             msg: `@${fromNickName}\n${desc}`
           }
-          const ext = JSON.parse(imMsg.ext)
+          let ext
+          try {
+            ext = JSON.parse(imMsg.ext)
+          } catch (err) {
+            ext = {}
+          }
           ext.nickname = internalRobot.robotNickname
           imMsg.ext = JSON.stringify(ext)
           // console.log(msg.body.msg)
