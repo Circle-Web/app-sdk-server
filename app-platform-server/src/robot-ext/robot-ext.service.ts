@@ -51,7 +51,7 @@ export class RobotExtService {
     return ResultFactory.success({ robot })
   }
 
-  async robotDetail(userId: string, id: number) {
+  async robotDetail(id: number, userId: string) {
     const robotDO = await this.dao.findOne({ where: { id, userId } })
     if (!robotDO) {
       return ResultFactory.create(ResultCode.PARAM_ERROR)

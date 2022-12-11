@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ImMsg } from 'src/im/dto/im-msg.dto';
 import { ImService } from 'src/im/im.service';
 import { Result } from 'src/utils/result/result';
 import { ResultFactory } from 'src/utils/result/resultFactory';
@@ -9,11 +10,13 @@ import { KeywordType } from './data/keywordType';
 import { RobotBO } from './data/robot.bo';
 import { KeywordTriggerDto } from './dto/keyword-trigger.dto';
 import { InternalRobotDO } from './entities/internal-robot.entity';
+import { WeatherRobotService } from './weather-robot/weather-robot.service';
 
 @Injectable()
 export class RobotService {
   constructor(
     private readonly imService: ImService,
+    private readonly weatherRobotService: WeatherRobotService,
     @InjectRepository(InternalRobotDO)
     private readonly dao: Repository<InternalRobotDO>
   ) { }
@@ -34,14 +37,14 @@ export class RobotService {
     }
     switch (type) {
       case KeywordType.天气:
-        // this.weatherRobotService.search(keyword).then(r => {
-        //   const desc = r.getValue()
-        //   const msg = new ImMsg()
-        //   msg.from = internalRobot.robotUsername
-        //   msg.to = [`${channelId}`]
-        //   msg.body.msg = desc
-        //   this.imService.internalRobotSendMsg(msg)
-        // })
+        this.weatherRobotService.search(keyword).then(r => {
+          const desc = r.getValue()
+          const msg = new ImMsg()
+          msg.from = internalRobot.robotUsername
+          msg.to = [`${channelId}`]
+          msg.body.msg = desc
+          this.imService.internalRobotSendMsg(msg)
+        })
         break;
       default:
         break;
