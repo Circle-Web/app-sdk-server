@@ -41,14 +41,18 @@ export class RobotService {
             return
           }
           const desc = r.getValue()
-          const msg = new ImMsg()
-          msg.from = internalRobot.robotUsername
-          msg.to = [`${channelId}`]
-          msg.body = {
+          const imMsg = new ImMsg()
+          imMsg.from = internalRobot.robotUsername
+          imMsg.to = [`${channelId}`]
+          imMsg.body = {
             msg: `@${fromNickName}\n${desc}`
           }
+          imMsg.customExts = {
+            ...imMsg.customExts,
+            nickname: internalRobot.robotNickname
+          }
           // console.log(msg.body.msg)
-          this.imService.internalRobotSendMsg(msg)
+          this.imService.internalRobotSendMsg(imMsg)
         })
         break;
       default:

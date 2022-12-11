@@ -6,6 +6,6 @@ export class ImMsg {
         msg: string
     }
     customEvent: string
-    customExts?: Map<string, string>
+    customExts?: any
     ext?: string
 }

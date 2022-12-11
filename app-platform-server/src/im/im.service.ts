@@ -92,6 +92,10 @@ export class ImService {
         }
         imMsg.from = data.robotUsername
         imMsg.to = [`${data.channelId}`]
+        imMsg.customExts = {
+            ...imMsg.customExts,
+            nickname: data.robotNickname
+        }
         return this.sendMsg(imMsg)
     }
 
