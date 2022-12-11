@@ -48,10 +48,9 @@ export class RobotService {
           imMsg.body = {
             msg: `@${fromNickName}\n${desc}`
           }
-          imMsg.customExts = {
-            ...imMsg.customExts,
-            nickname: internalRobot.robotNickname
-          }
+          const ext = JSON.parse(imMsg.ext)
+          ext.nickname = internalRobot.robotNickname
+          imMsg.ext = JSON.stringify(ext)
           // console.log(msg.body.msg)
           this.imService.internalRobotSendMsg(imMsg)
         })
