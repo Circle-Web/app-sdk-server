@@ -24,10 +24,11 @@ export class RobotService {
 
   async chatKeywordTrigger(dto: KeywordTriggerDto) {
     const { keyword, fromNickName, serverId, channelId } = dto
-    if (!keyword.includes("#天气查询：")) {
+    const match = this.parseString(keyword)
+    if (!match) {
       return ResultFactory.success()
     }
-    const type = KeywordType.天气
+    const type = match.type
     let internalRobot = await this.dao.findOne({ where: { serverId, channelId } })
     if (!internalRobot) {
       const res = await this.tryCreateInternalRobot(serverId, channelId)
@@ -38,7 +39,7 @@ export class RobotService {
     }
     switch (type) {
       case KeywordType.天气:
-        this.weatherRobotService.search(keyword).then(r => {
+        this.weatherRobotService.search(match.keyword).then(r => {
           if (r.error()) {
             return
           }
@@ -59,7 +60,7 @@ export class RobotService {
             ext.nickname = internalRobot.robotNickname
             ext.robot = RobotType.专属
           }
-          imMsg.ext = JSON.stringify(ext)
+          imMsg.ext = ext
           // console.log(msg.body.msg)
           this.imService.internalRobotSendMsg(imMsg)
         })
@@ -70,6 +71,17 @@ export class RobotService {
     return ResultFactory.success()
   }
 
+  private parseString(str) {
+    const typeKey = "#天气查询："
+    if (str.indexOf(typeKey) == 0) {
+      const keyword = str.substring(typeKey.length)
+      return {
+        type: KeywordType.天气,
+        keyword: keyword
+      }
+    }
+    return null
+  }
   async tryCreateInternalRobot(serverId: string, channelId: string) {
     const robotNickname = "频道专属机器人"
     const username = `${channelId}_${+new Date}`

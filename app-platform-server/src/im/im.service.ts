@@ -52,6 +52,7 @@ export class ImService {
                 this.logger.debug(data.access_token)
                 return ResultFactory.success(this.manager.access_token)
             }).catch(err => {
+                Logger.warn({ err })
                 return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
             })
         }
@@ -73,6 +74,7 @@ export class ImService {
         return lastValueFrom(observable).then((data) => {
             return ResultFactory.success(data.role)
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
@@ -116,7 +118,8 @@ export class ImService {
         }
         const observable = this.httpService.post(url,
             {
-                ...imMsg
+                ...imMsg,
+                type: 'txt'
             },
             {
                 headers: this.getHeardes(res.getValue())
@@ -129,6 +132,7 @@ export class ImService {
             }
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL)
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
@@ -170,6 +174,7 @@ export class ImService {
         return lastValueFrom(observable).then(() => {
             return ResultFactory.success(username)
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
@@ -195,6 +200,7 @@ export class ImService {
         return lastValueFrom(observable).then(() => {
             return ResultFactory.success()
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
@@ -207,13 +213,14 @@ export class ImService {
         }
         const serverName = res.getValue().name
         // 加入频道
+        let channelName = "默认频道"
         if (res.getValue().default_channel_id !== channelId) {
             res = await this.addChannel(robotUsername, channelId, serverId)
             if (res.error()) {
                 return res
             }
+            channelName = res.getValue()
         }
-        const channelName = res.getValue()
         return ResultFactory.success({ serverName, channelName })
     }
 
@@ -236,6 +243,7 @@ export class ImService {
             this.logger.debug(`已加入社区 ${res.data.server.name}`)
             return ResultFactory.success(res.data.server)
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
@@ -259,6 +267,7 @@ export class ImService {
             this.logger.debug(`已加入频道 ${res.data.channel.name}`)
             return ResultFactory.success(res.data.channel.name)
         }).catch(err => {
+            Logger.warn({ err })
             return ResultFactory.create(ResultCode.IM_REQUEST_FAIL, { message: err.message, error_description: err.response.data })
         })
     }
