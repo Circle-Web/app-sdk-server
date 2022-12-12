@@ -30,6 +30,9 @@ export class VoteExtService {
   }
 
   async getMainRecord(id: number, userId: string) {
+    if (isNaN(id)) {
+      return ResultFactory.create(ResultCode.PARAM_ERROR)
+    }
     const mainRecord = await this.voteRecordDao.findOne({ where: { id } })
     if (!mainRecord) {
       return ResultFactory.create(ResultCode.VOTE_EXT_NOT_EXIST)
