@@ -115,4 +115,10 @@ export class ExtVersionDO extends BaseEntity {
         default: '',
     })
     extTestUrl: string
+    @Column({
+        name: 'ExtVersionBuild',
+        comment: '插件构建状态，0 无构建，1正在构建，2失败，3成功',
+        default: 0,
+    })
+    extVersionBuild: number
 }
