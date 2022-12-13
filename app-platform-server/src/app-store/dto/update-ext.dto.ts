@@ -9,4 +9,7 @@ export class UpdateExtDto extends PartialType(CreateExtDto) {
     extBrief: string
     extLogo: string
     extMarketSnapshots: string[]
+    // 上传完zip后，调用更新
+    extResourceMd5: string
+    extResourceUrl: string
 }

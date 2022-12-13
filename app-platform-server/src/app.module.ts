@@ -12,12 +12,12 @@ import { RobotExtModule } from './robot-ext/robot-ext.module';
 import { RobotModule } from './robot/robot.module';
 import { SignExtModule } from './sign-ext/sign-ext.module';
 import { TagService } from './tag/tag.service';
+import { UploadExtCodeModule } from './upload-ext-code/upload-ext-code.module';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
 import { VoteExtModule } from './vote-ext/vote-ext.module';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require("path")
-
 @Module({
   imports: [
     // 配置模块
@@ -49,7 +49,8 @@ const path = require("path")
     QiNiuModule,
     RobotExtModule,
     VoteExtModule,
-    RobotModule
+    RobotModule,
+    UploadExtCodeModule
   ],
   controllers: [UserController],
   providers: [TagService],

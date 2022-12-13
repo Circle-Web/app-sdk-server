@@ -8,6 +8,7 @@ import { ExtQueryService } from './ext-query.service';
 @Module({
   imports: [TypeOrmModule.forFeature([ExtMainDetailDO]), TypeOrmModule.forFeature([ExtVersionDO])],
   controllers: [ExtQueryController],
-  providers: [ExtQueryService]
+  providers: [ExtQueryService],
+  exports: [ExtQueryService]
 })
 export class ExtQueryModule { }

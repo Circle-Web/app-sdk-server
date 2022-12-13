@@ -45,6 +45,14 @@ export class AppStoreService {
   }
 
   async getExtList(tagId: number, currentPage: number, pageSize: number) {
+    tagId = Number(tagId)
+    if (isNaN(tagId) || tagId <= 0) {
+      return this.rep.createQueryBuilder()
+        .skip(pageSize * (currentPage - 1))
+        .take(pageSize).getMany().then(list => {
+          return ResultFactory.success({ list })
+        })
+    }
     return this.rep.createQueryBuilder()
       .where("tagId = :tagId", { tagId })
       .skip(pageSize * (currentPage - 1))

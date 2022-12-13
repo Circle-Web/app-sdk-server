@@ -115,6 +115,7 @@ export class ExtOperateService {
     }
 
     async versionCommitTest(extAuthorId: number, extVersionId: number) {
+        // todo: 需要提交线程任务，执行脚本自动部署一下代码包（先解压，然后
         const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
         if (!versionDO) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)

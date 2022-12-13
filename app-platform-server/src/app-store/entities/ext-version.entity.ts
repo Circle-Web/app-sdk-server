@@ -93,4 +93,26 @@ export class ExtVersionDO extends BaseEntity {
         default: '0'
     })
     extVersionOnline: number
+    @Column({
+        name: 'ExtResourceMd5',
+        width: 20,
+        comment: '代码包资源md5',
+        default: '0.0.0'
+    })
+    extResourceMd5: string
+    @Column({
+        name: 'ExtResourceUrl',
+        width: 20,
+        comment: '代码包资源路径',
+        default: '0.0.0'
+    })
+    extResourceUrl: string
+    @Column({
+        name: 'ExtTestUrl',
+        type: 'varchar',
+        length: 255,
+        comment: '插件测试路径入口网络地址',
+        default: '',
+    })
+    extTestUrl: string
 }
