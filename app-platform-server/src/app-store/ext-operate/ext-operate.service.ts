@@ -151,7 +151,7 @@ export class ExtOperateService {
         const res = await this.unzip(resourcePath, newPath)
         if (res) {
             versionDO.extVersionBuild = ExtVersionBuild.BUILD_SUCCESS
-            versionDO.extTestUrl = `${this.configService.get("app.ip")}/${this.configService.get("app.port")}/${extUuid}/${time}/dist/index.html`
+            versionDO.extTestUrl = `${this.configService.get("app.ip")}:${this.configService.get("app.port")}/${extUuid}/${time}/dist/index.html`
         }
         await this.versionRep.save(versionDO)
         return ResultFactory.success()
