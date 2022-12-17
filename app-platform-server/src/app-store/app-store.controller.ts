@@ -29,12 +29,12 @@ export class AppStoreController {
   }
 
   @Get('search')
-  findExtList(@Query() key: string) {
+  findExtList(@Query() { key }) {
     return this.appStoreService.findExtListResult(key);
   }
 
   @Get('extMainDetail')
-  extMainDetail(@Query() extUuid: number) {
+  extMainDetail(@Query() { extUuid }) {
     return this.appStoreService.getExtMainDetail(extUuid)
   }
 

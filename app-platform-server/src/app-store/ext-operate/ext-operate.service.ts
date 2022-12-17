@@ -1,22 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UploadExtCodeService } from 'src/upload-ext-code/upload-ext-code.service';
+import { mkdirsSync } from 'src/utils/fileUtil';
 import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
 import { Repository } from 'typeorm';
 import { ExtStatus } from '../data/extStatus';
 import { ExtVersionAudit } from '../data/extVersionAudit';
+import { ExtVersionBuild } from '../data/extVersionBuild';
 import { ExtVersionOnline } from '../data/extVersionOnline';
 import { ExtVersionType } from '../data/extVersionType';
 import { UpdateExtDto } from '../dto/update-ext.dto';
 import { ExtMainDetailDO } from '../entities/ext-main-detail.entity';
 import { ExtVersionDO } from '../entities/ext-version.entity';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const compressing = require('compressing');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path')
 
 @Injectable()
 export class ExtOperateService {
 
     private static EXT_VERSION = '0.0.0'
     constructor(
+        private readonly configService: ConfigService,
         @InjectRepository(ExtMainDetailDO)
         private readonly rep: Repository<ExtMainDetailDO>,
         @InjectRepository(ExtVersionDO)
@@ -100,6 +109,9 @@ export class ExtOperateService {
         if (!version) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
+        if (version.extVersionType != ExtVersionType.DEV) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_IS_NOT_DEV)
+        }
         const extMainDetail = await this.rep.findOne({ where: { extUuid: version.extUuid, extAuthorId } })
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
@@ -115,23 +127,47 @@ export class ExtOperateService {
     }
 
     async versionCommitTest(extAuthorId: number, extVersionId: number) {
-        // todo: 需要提交线程任务，执行脚本自动部署一下代码包（先解压，然后
         const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
         if (!versionDO) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
-        const extMainDetail = await this.rep.findOne({ where: { extUuid: versionDO.extUuid, extAuthorId } })
+        const extUuid = versionDO.extUuid
+        const extMainDetail = await this.rep.findOne({ where: { extUuid, extAuthorId } })
         if (!extMainDetail) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL)
         }
         if (versionDO.extVersionType != ExtVersionType.DEV) {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_ERROR)
         }
+        if (!versionDO.extResourceUrl) {
+            return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_NOT_EXIST_RESOURCE_URL)
+        }
         versionDO.extVersionType = ExtVersionType.TEST
+        const resourcePath = `${this.configService.get(UploadExtCodeService.EXT_RESOURCE_PATH_ROOT)}/${versionDO.extResourceUrl}`
+        const time = +new Date
+        const newPath = `${path.join(__dirname, '../../../', 'static')}/${extUuid}/${time}`
+        Logger.debug({ newPath })
+        mkdirsSync(newPath)
+        const res = await this.unzip(resourcePath, newPath)
+        if (res) {
+            versionDO.extVersionBuild = ExtVersionBuild.BUILD_SUCCESS
+            versionDO.extTestUrl = `${this.configService.get("app.ip")}/${this.configService.get("app.port")}/${extUuid}/${time}/dist/index.html`
+        }
         await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }
-
+    //解压缩
+    unzip(path: string, fllepath: string) {
+        return new Promise((resolve, reject) => {
+            compressing.zip.uncompress(path, fllepath, { zipFileNameEncoding: 'GBK' })
+                .then(() => {
+                    resolve(true);
+                })
+                .catch((err: any) => {
+                    reject(err);
+                });
+        });
+    }
     async versionTestBack(extAuthorId: number, extVersionId: number) {
         const versionDO = await this.versionRep.findOne({ where: { extVersionId } })
         if (!versionDO) {
@@ -145,6 +181,7 @@ export class ExtOperateService {
             return ResultFactory.create(ResultCode.UPDATE_EXT_DATA_FAIL_VERSION_TYPE_BACK_DEV_ERROR)
         }
         versionDO.extVersionType = ExtVersionType.DEV
+        versionDO.extVersionBuild = ExtVersionBuild.NOT_BUILD
         await this.versionRep.save(versionDO)
         return ResultFactory.success()
     }

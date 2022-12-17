@@ -16,12 +16,12 @@ export class ExtOperateController {
 
     // 用户修改插件的上架状态
     @Post('/reOnlineExt')
-    reOnlineExt(@Req() request, @Body() extUuid: number) {
+    reOnlineExt(@Req() request, @Body() { extUuid }) {
         return this.extOperateService.reOnlineExt(request.user.id, extUuid)
     }
 
     @Post('/offlineExt')
-    offlineExt(@Req() request, @Body() extUuid: number) {
+    offlineExt(@Req() request, @Body() { extUuid }) {
         return this.extOperateService.offlineExt(request.user.id, extUuid)
     }
 
@@ -39,37 +39,37 @@ export class ExtOperateController {
 
     // 提交测试
     @Post('versionCommitTest')
-    versionCommitTest(@Req() request, @Body() extVersionId: number) {
+    versionCommitTest(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionCommitTest(request.user.id, extVersionId)
     }
 
     // 取消测试
     @Post('versionTestBack')
-    versionTestBack(@Req() request, @Body() extVersionId: number) {
+    versionTestBack(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionTestBack(request.user.id, extVersionId)
     }
 
     // 提交审核
     @Post('versionCommitJudge')
-    versionCommitJudge(@Req() request, @Body() extVersionId: number) {
+    versionCommitJudge(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionCommitJudge(request.user.id, extVersionId)
     }
 
     // 取消审核
     @Post('versionBackJudge')
-    versionBackJudge(@Req() request, @Body() extVersionId: number) {
+    versionBackJudge(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionBackJudge(request.user.id, extVersionId)
     }
 
     // 提交线上
     @Post('versionCommitOnline')
-    versionCommitOnline(@Req() request, @Body() extVersionId: number) {
+    versionCommitOnline(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionCommitOnline(request.user.id, extVersionId)
     }
 
     // 取消线上版本
     @Post('versionBackOnline')
-    versionBackOnline(@Req() request, @Body() extVersionId: number) {
+    versionBackOnline(@Req() request, @Body() { extVersionId }) {
         return this.extOperateService.versionBackOnline(request.user.id, extVersionId)
     }
 

@@ -10,7 +10,7 @@ const fs = require("fs")
 
 @Injectable()
 export class UploadExtCodeService {
-  private static EXT_RESOURCE_PATH_ROOT = "app.extResourcePathRoot"
+  public static EXT_RESOURCE_PATH_ROOT = "app.extResourcePathRoot"
   constructor(
     private readonly configService: ConfigService,
     private readonly extQueryService: ExtQueryService,
@@ -42,7 +42,7 @@ export class UploadExtCodeService {
             return Logger.warn("上传ext代码包写入失败", err)
           }
           version.extResourceMd5 = fileMd5
-          version.extResourceUrl = extResourceUrl
+          version.extResourceUrl = `${extResourceUrl}/${newFileName}`
           this.extQueryService.update(version)
         })
       } else {

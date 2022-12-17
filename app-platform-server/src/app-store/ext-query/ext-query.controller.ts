@@ -14,13 +14,13 @@ export class ExtQueryController {
 
   // 查询指定的小程序概要信息
   @Get('extMainDetail')
-  findOne(@Req() request, @Query() extUuid: number) {
+  findOne(@Req() request, @Query() { extUuid }) {
     return this.extQueryService.findOne(request.user.id, extUuid);
   }
 
   // 查询指定的小程序版本信息
   @Get('versionList')
-  versionList(@Req() request, @Query() extUuid: number) {
+  versionList(@Req() request, @Query() { extUuid }) {
     return this.extQueryService.findAllVersion(request.user.id, extUuid);
   }
 
