@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImModule } from 'src/im/im.module';
 import { InternalRobotDO } from './entities/internal-robot.entity';
@@ -11,7 +11,6 @@ import { WeatherRobotService } from './weather-robot/weather-robot.service';
 @Module({
   imports: [
     HttpModule.registerAsync({
-      imports: [ConfigModule],
       useFactory: (config: ConfigService) => ({
         timeout: config.get('http.timeout')
       }),

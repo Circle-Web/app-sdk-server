@@ -106,3 +106,4 @@ dist
 .history/
 
 *-temp.yml
+app-platform-server/static/

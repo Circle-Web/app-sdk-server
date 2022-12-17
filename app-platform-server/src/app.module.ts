@@ -28,7 +28,6 @@ const path = require("path")
     }),
     //配置数据库链接
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return {

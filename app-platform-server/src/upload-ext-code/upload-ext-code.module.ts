@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ExtQueryModule } from 'src/app-store/ext-query/ext-query.module';
@@ -8,9 +8,7 @@ import { UploadExtCodeService } from './upload-ext-code.service';
 
 @Module({
   imports: [
-    ConfigModule,
     MulterModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         // 配置参数

@@ -1,6 +1,8 @@
 import { Logger } from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
 import { JwtAuthGuard } from './auth/jwt.gurad';
 import { HttpFilter } from './common/filter';
@@ -13,14 +15,17 @@ const corsOptions: CorsOptions = {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = app.get(ConfigService);
+  const ip = configService.get<string>('app.ip');
+  const port = configService.get<string>('app.port', "80");
+
   app.useGlobalFilters(new HttpFilter())
   app.useGlobalGuards(new JwtAuthGuard());
   app.enableCors(corsOptions);
-  await app.listen(3000);
-  app.getUrl().then(v => {
-    Logger.log(`${v} started.`)
-  })
+  app.useStaticAssets('static')
+  await app.listen(port);
+  Logger.log(`${ip}:${port} server started.`)
 }
 bootstrap();
 Date.prototype.toJSON = function () {
