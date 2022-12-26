@@ -48,7 +48,7 @@ export class TellJokeService extends RateLimitService {
         }))
         return lastValueFrom(observable).then((res: any) => {
             if (res.result) {
-                return ResultFactory.success(res.result.list?.[0]?.content)
+                return ResultFactory.success(res.result.list?.[0]?.content?.replace("<br>", "\r\n")?.replace("</br>", "\r\n")?.replace("<br>", "\r\n")?.replace("&nbsp;", " "))
             }
             return ResultFactory.create(ResultCode.SEARCH_ERROR)
         }).catch(err => {
