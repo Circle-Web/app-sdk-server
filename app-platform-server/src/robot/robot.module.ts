@@ -8,6 +8,7 @@ import { InternalRobotDO } from './entities/internal-robot.entity';
 import { RobotController } from './robot.controller';
 import { RobotService } from './robot.service';
 import { GuessNumberService } from './weather-robot/guess-number.service';
+import { TellJokeService } from './weather-robot/tell-joke.service';
 import { WeatherRobotService } from './weather-robot/weather-robot.service';
 
 @Module({
@@ -24,7 +25,7 @@ import { WeatherRobotService } from './weather-robot/weather-robot.service';
     ScheduleModule.forRoot()
   ],
   controllers: [RobotController],
-  providers: [RobotService, WeatherRobotService, GuessNumberService],
+  providers: [RobotService, WeatherRobotService, GuessNumberService, TellJokeService],
   exports: [RobotService]
 })
 export class RobotModule { }

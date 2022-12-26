@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Interval } from '@nestjs/schedule';
 import { ImService } from 'src/im/im.service';
-import TimeUtil from 'src/utils/timeUtil';
+import TimeUtil from 'src/utils/TimeUtil';
 import { InternalRobotMsgBO } from '../data/internalRobotMsg.bo';
 
 @Injectable()

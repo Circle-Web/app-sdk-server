@@ -76,3 +76,8 @@ translate:
   url: ""
   appid: ""
   key: ""
+
+# 极速数据
+jisu:
+  xiaohua_url: ""
+  appkey: ""

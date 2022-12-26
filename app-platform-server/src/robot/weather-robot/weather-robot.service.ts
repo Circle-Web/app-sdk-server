@@ -2,34 +2,44 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom, map } from 'rxjs';
+import { RateLimitService } from 'src/common/rate-limit.service';
+import { ImService } from 'src/im/im.service';
 import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
+import { InternalRobotMsgBO } from '../data/internalRobotMsg.bo';
 
 @Injectable()
-export class WeatherRobotService {
+export class WeatherRobotService extends RateLimitService {
     private static CITY_URL = 'weather.cityUrl'
     private static URL = 'weather.url'
     private static KEY = 'weather.key'
-    constructor(private readonly httpService: HttpService,
+    constructor(
+        private readonly httpService: HttpService,
+        private readonly imService: ImService,
         private readonly configService: ConfigService,
-    ) { }
+    ) {
+        super()
+    }
 
-    async search(keyword: string): Promise<Result<any>> {
+    async trySearch(msg: InternalRobotMsgBO, keyword: string): Promise<Result<any>> {
+        if (!this.refreshRateLimit()) {
+            return
+        }
         const cityRes = await this.getCity(keyword)
         if (cityRes.error()) {
-            const desc = `哎呀，机器人无法查询该地点："${keyword}"`
-            return ResultFactory.create(ResultCode.SEARCH_ERROR, { desc })
+            msg.desc = `哎呀，机器人无法查询该地点："${keyword}"`
+            this.imService.internalRobotSendMsg(msg)
         }
         const location = cityRes.getValue()
         const weatherRes = await this.getWeather(location)
         if (weatherRes.error()) {
-            const desc = `哎呀，机器人暂时提供天气查询服务~`
-            return ResultFactory.create(ResultCode.SEARCH_ERROR, { desc })
+            msg.desc = `哎呀，机器人暂时提供天气查询服务~`
+            this.imService.internalRobotSendMsg(msg)
         }
         const now = weatherRes.getValue()
-        const desc = `地点：${keyword}，温度：${now?.temp}，风向：${now.windDir}，风力等级：${now.windScale}，相对湿度：${now.humidity}%`
-        return ResultFactory.success({ desc })
+        msg.desc = `地点：${keyword}，温度：${now?.temp}，风向：${now.windDir}，风力等级：${now.windScale}，相对湿度：${now.humidity}%`
+        this.imService.internalRobotSendMsg(msg)
     }
 
     async getCity(cityName: string) {

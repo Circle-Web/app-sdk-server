@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ResultCode } from 'src/utils/result/resultCode';
 import { ResultFactory } from 'src/utils/result/resultFactory';
-import timeUtil from 'src/utils/timeUtil';
+import timeUtil from 'src/utils/TimeUtil';
 import { Repository } from 'typeorm';
 import { SignRecordDO } from './entities/sign-record.entity';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
