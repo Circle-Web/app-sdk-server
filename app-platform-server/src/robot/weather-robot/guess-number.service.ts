@@ -60,9 +60,12 @@ export class GuessNumberService {
             msg.needAt = false
             this.imService.internalRobotSendMsg(msg)
         } else {
-            if (answerNumber < keyNumber) {
+            if (answerNumber <= game.currentMin || answerNumber >= game.currentMax) {
+                return
+            }
+            if (game.currentMin < answerNumber && answerNumber < keyNumber) {
                 game.currentMin = answerNumber
-            } else {
+            } else if (keyNumber < answerNumber && answerNumber < game.currentMax) {
                 game.currentMax = answerNumber
             }
             const second = Math.floor(((+game.endTime) - (+new Date)) / TimeUtil.ONE_SECOND_MILLS)
