@@ -38,8 +38,8 @@ export class TellJokeService extends RateLimitService {
         const url = `https://${this.configService.get("jisu.xiaohua_url")}/xiaohua/text`
         const observable = this.httpService.get(url, {
             params: {
-                pagenum: 1,
-                pagesize: Math.floor(Math.random() * 80000) + 1,
+                pagenum: Math.floor(Math.random() * 80000) + 1,
+                pagesize: 1,
                 sort: "addtime",
                 appkey: this.appkey,
             }
