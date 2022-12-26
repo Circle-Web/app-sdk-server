@@ -39,7 +39,7 @@ export class TellJokeService extends RateLimitService {
         const observable = this.httpService.get(url, {
             params: {
                 pagenum: 1,
-                pagesize: 1,
+                pagesize: Math.floor(Math.random() * 80000) + 1,
                 sort: "addtime",
                 appkey: this.appkey,
             }
