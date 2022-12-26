@@ -70,3 +70,9 @@ weather:
   url: ''
   cityUrl: ''
   key: ''
+
+# 百度翻译api
+translate:
+  url: ""
+  appid: ""
+  key: ""

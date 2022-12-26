@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RobotCreatedDO } from 'src/robot-ext/entities/robot-created.entity';
 import { ImController } from './im.controller';
 import { ImService } from './im.service';
+import { BaiduTranslateService } from './translate.service';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { ImService } from './im.service';
     }),
     TypeOrmModule.forFeature([RobotCreatedDO])
   ],
-  providers: [ImService],
+  providers: [ImService, BaiduTranslateService],
   exports: [ImService],
   controllers: [ImController]
 })
