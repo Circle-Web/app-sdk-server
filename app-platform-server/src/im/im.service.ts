@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { lastValueFrom, map } from 'rxjs';
 import { RobotCreatedDO } from 'src/robot-ext/entities/robot-created.entity';
+import { InternalRobotMsgBO } from 'src/robot/data/internalRobotMsg.bo';
 import { RobotType } from 'src/robot/data/robotType';
 import { Result } from 'src/utils/result/result';
 import { ResultCode } from 'src/utils/result/resultCode';
@@ -137,8 +138,35 @@ export class ImService {
         })
     }
 
-    public async internalRobotSendMsg(imMsg: ImMsg) {
-        return this.sendMsg(imMsg)
+    public internalRobotSendMsg(msgBO: InternalRobotMsgBO) {
+        const { fromNickName, internalRobot, channelId, desc, needAt } = msgBO
+        if (!desc) {
+            return;
+        }
+        const imMsg = new ImMsg()
+        imMsg.from = internalRobot.robotUsername
+        imMsg.to = [`${channelId}`]
+        let msg: string
+        if (needAt) {
+            msg = `@${fromNickName}  ${desc}`
+        } else {
+            msg = desc
+        }
+        imMsg.body = {
+            msg
+        }
+        let ext: { nickname?: any; robot?: any; }
+        try {
+            ext = imMsg.ext
+            ext.nickname = internalRobot.robotNickname
+            ext.robot = RobotType.专属
+        } catch (err) {
+            ext = {}
+            ext.nickname = internalRobot.robotNickname
+            ext.robot = RobotType.专属
+        }
+        imMsg.ext = ext
+        this.sendMsg(imMsg)
     }
 
     async createRobot(username: string, robotName: string, serverId: string): Promise<Result<string>> {

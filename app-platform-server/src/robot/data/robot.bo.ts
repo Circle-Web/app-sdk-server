@@ -1,4 +1,3 @@
-
 export class RobotBO {
     robotUsername: string
     robotNickname: string
