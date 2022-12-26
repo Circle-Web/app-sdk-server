@@ -17,15 +17,17 @@ export class WeatherRobotService {
     async search(keyword: string): Promise<Result<any>> {
         const cityRes = await this.getCity(keyword)
         if (cityRes.error()) {
-            return cityRes
+            const msg = `哎呀，机器人无法查询该地点："${keyword}"`
+            return ResultFactory.success(msg)
         }
         const location = cityRes.getValue()
         const weatherRes = await this.getWeather(location)
         if (weatherRes.error()) {
-            return weatherRes
+            const msg = `哎呀，机器人暂时提供天气查询服务~`
+            return ResultFactory.success(msg)
         }
         const now = weatherRes.getValue()
-        const msg = `地点：${keyword} \n 温度：${now?.temp} \n 风向：${now.windDir} \n 风力等级：${now.windScale} \n 相对湿度：${now.humidity}%`
+        const msg = `地点：${keyword}，温度：${now?.temp}，风向：${now.windDir}，风力等级：${now.windScale}，相对湿度：${now.humidity}%`
         return ResultFactory.success(msg)
     }
 

@@ -13,6 +13,7 @@ import { KeywordTriggerDto } from './dto/keyword-trigger.dto';
 import { InternalRobotDO } from './entities/internal-robot.entity';
 import { WeatherRobotService } from './weather-robot/weather-robot.service';
 
+const weatherMatch = /#天气查询[:： ]*/ig
 @Injectable()
 export class RobotService {
   constructor(
@@ -71,10 +72,9 @@ export class RobotService {
     return ResultFactory.success()
   }
 
-  private parseString(str) {
-    const typeKey = "#天气查询："
-    if (str.indexOf(typeKey) == 0) {
-      const keyword = str.substring(typeKey.length)
+  private parseString(str: string) {
+    if (str.match(weatherMatch)?.length) {
+      const keyword = str.replace(weatherMatch, "").trim()
       return {
         type: KeywordType.天气,
         keyword: keyword
@@ -82,6 +82,7 @@ export class RobotService {
     }
     return null
   }
+
   async tryCreateInternalRobot(serverId: string, channelId: string) {
     const robotNickname = "频道专属机器人"
     const username = `${channelId}_${+new Date}`
